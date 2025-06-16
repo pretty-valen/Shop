@@ -242,30 +242,35 @@ if (grupoDeportiva) {
   }
 
   function deleteProduct(id) {
-    const arr = JSON.parse(
-      localStorage.getItem("catalogoProductos") || "[]"
-    ).filter(p => p.id !== id);
-    localStorage.setItem("catalogoProductos", JSON.stringify(arr));
-    location.reload();
+  fetch("https://admin-backend-ts85.onrender.com/productos/" + id, {
+    method: "DELETE"
+  })
+    .then(res => {
+      if (res.ok) location.reload();
+      else alert("❌ No se pudo eliminar el producto");
+    })
+    .catch(() => alert("❌ Error de red al eliminar"));
+}
+
   }
 
-  function openEditModal(id) {
-    const productosList = JSON.parse(
-      localStorage.getItem("catalogoProductos") || "[]"
-    );
-    const p = productosList.find(x => x.id === id);
-    if (!p) return alert("Producto no encontrado");
-    touchSession();
-    catalogoModal.classList.add("open");
+  async function openEditModal(id) {
+  const res = await fetch("https://admin-backend-ts85.onrender.com/productos");
+  const productosList = await res.json();
+  const p = productosList.find(x => x._id === id || x.id == id);
+  if (!p) return alert("Producto no encontrado");
 
-    const inputFotos = document.getElementById("fotos");
-    inputFotos.required = false;
+  touchSession();
+  catalogoModal.classList.add("open");
 
-    form.nombre.value      = p.nombre;
-    form.categoria.value   = p.categoria;
-    form.precio.value      = p.precio;
-    form.descripcion.value = p.descripcion;
-    form.descuento.value   = p.descuento;
+  const inputFotos = document.getElementById("fotos");
+  inputFotos.required = false;
+
+  form.nombre.value      = p.nombre;
+  form.categoria.value   = p.categoria;
+  form.precio.value      = p.precio;
+  form.descripcion.value = p.descripcion;
+  form.descuento.value   = p.descuento;
 
     if (form.marcas)    form.marcas.value    = p.marcas.join(", ");
     if (form.productos) form.productos.value = p.productos.join(", ");
@@ -276,41 +281,44 @@ if (grupoDeportiva) {
     }
 
     form.onsubmit = async e => {
-      e.preventDefault();
-      const newFiles = Array.from(inputFotos.files || []);
-      if (newFiles.length) {
-        const more = await Promise.all(
-          newFiles.map(f => new Promise(res => {
-            const r = new FileReader();
-            r.onload = () => res(r.result);
-            r.readAsDataURL(f);
-          }))
-        );
-        p.fotos = p.fotos.concat(more);
-      }
-      p.nombre      = form.nombre.value.trim();
-      p.categoria   = form.categoria.value;
-      p.precio      = parseFloat(form.precio.value);
-      p.descripcion = form.descripcion.value.trim();
-      p.descuento   = parseFloat(form.descuento.value) || 0;
-      if (form.marcas)    p.marcas    = form.marcas.value.split(",").map(s=>s.trim()).filter(Boolean);
-      if (form.productos) p.productos = form.productos.value.split(",").map(s=>s.trim()).filter(Boolean);
-      if (form.isPack)    p.isPack    = form.isPack.checked;
-      if (p.categoria === "Pijama") {
-        p.talla  = form.talla.value.trim();
-        p.genero = form.genero.value;
-      }
-
-      localStorage.setItem("catalogoProductos", JSON.stringify(productosList));
-      catalogoModal.classList.remove("open");
-      localStorage.removeItem("highlightTs");
-      localStorage.removeItem("highlightIds");
-      localStorage.removeItem("indexMixTs");
-      localStorage.removeItem("indexMixData");
-      location.reload();
-      alert("✅ Producto actualizado");
-    };
+  e.preventDefault();
+  const newFiles = Array.from(inputFotos.files || []);
+  if (newFiles.length) {
+    const more = await Promise.all(
+      newFiles.map(f => new Promise(res => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.readAsDataURL(f);
+      }))
+    );
+    p.fotos = p.fotos.concat(more);
   }
+
+  p.nombre      = form.nombre.value.trim();
+  p.categoria   = form.categoria.value;
+  p.precio      = parseFloat(form.precio.value);
+  p.descripcion = form.descripcion.value.trim();
+  p.descuento   = parseFloat(form.descuento.value) || 0;
+
+  if (form.marcas)    p.marcas    = form.marcas.value.split(",").map(s=>s.trim()).filter(Boolean);
+  if (form.productos) p.productos = form.productos.value.split(",").map(s=>s.trim()).filter(Boolean);
+  if (form.isPack)    p.isPack    = form.isPack.checked;
+  if (p.categoria === "Pijama") {
+    p.talla  = form.talla.value.trim();
+    p.genero = form.genero.value;
+  }
+
+  await fetch("https://admin-backend-ts85.onrender.com/productos/" + p._id, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(p)
+  });
+
+  catalogoModal.classList.remove("open");
+  location.reload();
+  alert("✅ Producto actualizado");
+};
+
 
   window.createAddCatBtn   = createAddCatBtn;
   window.enableEditDelete = enableEditDelete;

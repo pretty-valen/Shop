@@ -1,6 +1,6 @@
 function verDetalleProducto(id) {
   const productos = JSON.parse(localStorage.getItem("catalogoProductos") || "[]");
-  const prod = productos.find(p => p.id === id);
+  const prod = productos.find(p => p.id == id || p._id == id);
   if (!prod) return;
 
   const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   return `
     <div class="producto-card"
          style="cursor:pointer"
-         data-id="${p.id}"
+         data-id="${p._id || p.id}"
          data-genero="${p.genero || ''}"
          data-tallas="${(p.talla || '').toUpperCase()}"
          data-precio="${p.precio}"
