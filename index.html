@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inicio - Pretty</title>
+  <link rel="stylesheet" href="estilos.css"/>
+</head>
+<body>
+  <header>
+    <div class="menu-hamburguesa" id="hamburger">☰</div>
+    <h1 class="nombre-tienda">Pretty</h1>
+    <div class="icono-carrito">🛒</div>
+    <nav class="nav-menu" id="nav-menu"><ul></ul></nav>
+  </header>
+
+  <section class="imagen-central" id="inicio">
+    <img src="imagenes/imagen.png" alt="Imagen Principal"/>
+  </section>
+
+  <!-- Carrusel de secciones -->
+  <section class="secciones" id="secciones" data-editable>
+    <button class="flecha izquierda" id="scroll-left">&#8249;</button>
+    <div class="contenedor-secciones" id="contenedor-secciones">
+      <a href="lociones.html"    class="seccion" data-editable>
+        <img src="imagenes/lociones.png"   alt="Lociones"/>
+        <div class="titulo">Lociones</div>
+      </a>
+      <a href="gorras.html"      class="seccion" data-editable>
+        <img src="imagenes/gorra.png"      alt="Gorras"/>
+        <div class="titulo">Gorras</div>
+      </a>
+      <a href="maquillaje.html"  class="seccion" data-editable>
+        <img src="imagenes/maquillaje.png" alt="Maquillaje"/>
+        <div class="titulo">Maquillaje</div>
+      </a>
+      <a href="pijama.html"      class="seccion" data-editable>
+        <img src="imagenes/pijamas.png"    alt="Pijama"/>
+        <div class="titulo">Pijama</div>
+      </a>
+      <a href="deportiva.html"   class="seccion" data-editable>
+        <img src="imagenes/deportiva.png"  alt="Ropa Deportiva"/>
+        <div class="titulo">Ropa Deportiva</div>
+      </a>
+    </div>
+    <button class="flecha derecha" id="scroll-right">&#8250;</button>
+  </section>
+
+  <!-- Productos destacados -->
+  <h2 class="subtitulo">Productos Destacados</h2>
+  <section class="productos" id="productos-destacados" data-editable>
+    <!-- rotate.js inyectará hasta 5 tarjetas de cualquier categoría -->
+  </section>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <div class="footer-section" data-editable>
+        <h3>Acerca de Nosotros</h3>
+        <p>Pretty es una tienda en línea dedicada a ofrecer productos de belleza y moda con la mejor calidad y estilo.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contáctanos</h3>
+        <p class="telefono">+57 123 456 7890</p>
+      </div>
+      <div class="footer-section">
+        <h3>Nuestras Redes</h3>
+        <a href="https://www.instagram.com/pretty_diez_/" target="_blank">
+          <img src="imagenes/instagram.png" alt="Instagram" class="icono-redes"/>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Admin Login -->
+  <div id="admin-login-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Ingreso Admin</h2>
+      <input type="text" id="admin-user" placeholder="Usuario"/>
+      <input type="password" id="admin-pass" placeholder="Contraseña"/>
+      <button id="login-btn">Entrar</button>
+    </div>
+  </div>
+
+  <!-- Modal Añadir al Catálogo / Editar -->
+  <div id="admin-catalogo-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-catalogo">&times;</span>
+      <h2>Añadir al catálogo</h2>
+      <form id="form-catalogo" enctype="multipart/form-data">
+        <label for="fotos">Fotos (mínimo 1, múltiples permitidas):</label>
+        <input type="file" id="fotos" name="fotos[]" accept="image/*" multiple required/>
+
+        <label for="nombre-producto">Nombre:</label>
+        <input type="text" id="nombre-producto" name="nombre" required/>
+
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" name="categoria" required>
+          <option value="Lociones">Lociones</option>
+          <option value="Gorras">Gorras</option>
+          <option value="Maquillaje">Maquillaje</option>
+          <option value="Pijama">Pijama</option>
+          <option value="Ropa Deportiva">Ropa Deportiva</option>
+        </select>
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" step="0.01" required/>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+        <label for="descuento">Descuento (opcional %):</label>
+        <input type="number" id="descuento" name="descuento" step="0.01" min="0" max="100"/>
+
+        <!-- Campos extra para Lociones -->
+        <div id="grupo-lociones" style="display:none; margin-top:12px;">
+          <label for="marcas">Marca(s):</label>
+          <input type="text" id="marcas" name="marcas" placeholder="Ejemplo: Hugo Boss, Marchsini"/>
+
+          <label for="genero" style="margin-top:8px;">Género:</label>
+          <select id="genero" name="genero">
+            <option value="">Selecciona...</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Niño">Niño</option>
+            <option value="Niña">Niña</option>
+            <option value="Todos">Todos</option>
+          </select>
+        </div>
+        <!-- Campos extra para Ropa Deportiva -->
+<div id="deportiva-extra" style="display:none; margin-top:12px;">
+  <label for="marcas">Marca(s):</label>
+  <input type="text" id="marcas" name="marcas" placeholder="Ejemplo: Nike, Adidas"/>
+
+  <label for="talla" style="margin-top:8px;">Talla(s):</label>
+  <input type="text" id="talla" name="talla" placeholder="Ej: S, M, L"/>
+
+  <label for="genero" style="margin-top:8px;">Género:</label>
+  <select id="genero" name="genero">
+    <option value="">Selecciona...</option>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer">Mujer</option>
+    <option value="Niño">Niño</option>
+    <option value="Niña">Niña</option>
+    <option value="Todos">Todos</option>
+  </select>
+</div>
+
+
+        <button type="submit" id="submit-catalogo">Añadir al catálogo</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+  <script src="rotate.js"></script>
+  <script src="admin.js"></script>
+  <script src="productos.js"></script>
+
+  <!-- Script carrusel de secciones -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const cont = document.getElementById("contenedor-secciones");
+      const leftBtn  = document.getElementById("scroll-left");
+      const rightBtn = document.getElementById("scroll-right");
+
+      const item = cont.querySelector(".seccion");
+      const gap = parseInt(getComputedStyle(item).marginRight) + parseInt(getComputedStyle(item).marginLeft);
+      const itemWidth = item.offsetWidth + gap;
+
+      function updateArrows() {
+        const overflow = cont.scrollWidth > cont.clientWidth;
+        leftBtn.style.display  = (overflow && cont.scrollLeft > 0)                       ? "block" : "none";
+        rightBtn.style.display = (overflow && cont.scrollLeft + cont.clientWidth < cont.scrollWidth) ? "block" : "none";
+      }
+
+      rightBtn.addEventListener("click", () => cont.scrollBy({ left: itemWidth, behavior: "smooth" }));
+      leftBtn.addEventListener("click",  () => cont.scrollBy({ left: -itemWidth, behavior: "smooth" }));
+      cont.addEventListener("scroll", updateArrows);
+      window.addEventListener("resize", updateArrows);
+
+      updateArrows();
+    });
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".producto-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const id = card.dataset.id;
+        const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+        localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
+        window.location.href = "visualizacion.html";
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pijama - Pretty</title>
+  <link rel="stylesheet" href="estilos.css"/>
+</head>
+<body>
+  <header>
+    <div class="menu-hamburguesa" id="hamburger">☰</div>
+    <h1 class="nombre-tienda">Pretty</h1>
+    <div class="icono-carrito">🛒</div>
+    <nav class="nav-menu" id="nav-menu">
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="lociones.html">Lociones</a></li>
+        <li><a href="gorras.html">Gorras</a></li>
+        <li><a href="maquillaje.html">Maquillaje</a></li>
+        <li><a href="pijama.html" aria-current="page">Pijama</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="imagen-central" id="pijama">
+    <img src="imagenes/imagen.png" alt="Pijama"/>
+  </section>
+
+  <div class="seccion-productos">
+    <section class="filtros-pijama" id="filtros-pijama">
+      <h2>FILTRAR PIJAMAS</h2>
+      <label for="filter-price-pijama">Orden precio:</label>
+      <select id="filter-price-pijama">
+        <option value="none">Sin ordenar</option>
+        <option value="asc">Menor → Mayor</option>
+        <option value="desc">Mayor → Menor</option>
+      </select>
+      <label>
+        <input type="checkbox" id="filter-discount-pijama"/>
+        Solo con descuento
+      </label>
+      <div id="filtro-talla-pijama">
+        <label>Talla:</label>
+        <div id="tallas-lista"></div>
+      </div>
+      <label for="filtro-genero-pijama">Género:</label>
+      <select id="filtro-genero-pijama">
+        <option value="">Todos</option>
+        <option value="hombre">Hombre</option>
+        <option value="mujer">Mujer</option>
+        <option value="niño">Niño</option>
+        <option value="niña">Niña</option>
+      </select>
+      <button id="clear-filters-pijama">Limpiar filtros</button>
+    </section>
+    <section class="productos" id="productos-pijama" data-editable>
+      <!-- Aquí se insertan los productos de Pijama -->
+    </section>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <div class="footer-section" data-editable>
+        <h3>Acerca de Nosotros</h3>
+        <p>Pretty es una tienda en línea dedicada a ofrecer productos de belleza y moda con la mejor calidad y estilo.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contáctanos</h3>
+        <p class="telefono">+57 123 456 7890</p>
+      </div>
+      <div class="footer-section">
+        <h3>Nuestras Redes</h3>
+        <a href="https://www.instagram.com/tu_cuenta" target="_blank">
+          <img src="imagenes/instagram.png" alt="Instagram" class="icono-redes"/>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <div id="admin-login-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Ingreso Admin</h2>
+      <input type="text" id="admin-user" placeholder="Usuario"/>
+      <input type="password" id="admin-pass" placeholder="Contraseña"/>
+      <button id="login-btn">Entrar</button>
+    </div>
+  </div>
+
+  <div id="admin-catalogo-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-catalogo">&times;</span>
+      <h2>Añadir al catálogo</h2>
+      <form id="form-catalogo" enctype="multipart/form-data">
+        <label for="fotos">Fotos (mínimo 1, múltiples permitidas):</label>
+        <input type="file" id="fotos" name="fotos[]" accept="image/*" multiple required/>
+
+        <label for="nombre-producto">Nombre:</label>
+        <input type="text" id="nombre-producto" name="nombre" required/>
+
+        <label for="categoria">Categoría:</label>
+        <select id="categoria" name="categoria" required>
+          <option value="Lociones">Lociones</option>
+          <option value="Gorras">Gorras</option>
+          <option value="Maquillaje">Maquillaje</option>
+          <option value="Pijama">Pijama</option>
+          <option value="Ropa Deportiva">Ropa Deportiva</option>
+        </select>
+
+        <div id="maquillaje-extra" style="display:none;">
+          <label for="marcas">Marca(s):</label>
+          <input type="text" id="marcas" name="marcas" placeholder="Ej: Maybelline, L’Oréal"/>
+          <label for="productos">Producto(s):</label>
+          <input type="text" id="productos" name="productos" placeholder="Ej: Lápiz labial, Base líquida"/>
+          <label for="isPack">¿Es un pack?</label>
+          <select id="isPack" name="isPack">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+          </select>
+        </div>
+
+        <div id="pijama-extra" style="display:none;">
+          <label for="talla">Talla:</label>
+          <input type="text" id="talla" name="talla" placeholder="Ej: S, M, L, XL"/>
+
+          <label for="genero-pj">Género:</label>
+          <select id="genero-pj" name="genero">
+            <option value="hombre">Hombre</option>
+            <option value="mujer">Mujer</option>
+            <option value="niño">Niño</option>
+            <option value="niña">Niña</option>
+          </select>
+        </div>
+
+        <label for="precio">Precio:</label>
+        <input type="number" id="precio" name="precio" step="0.01" required/>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
+
+        <label for="descuento">Descuento (opcional %):</label>
+        <input type="number" id="descuento" name="descuento" step="0.01" min="0" max="100"/>
+
+        <button type="submit" id="submit-catalogo">Añadir al catálogo</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+  <script src="admin.js"></script>
+  <script src="productos.js"></script>
+
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const contenedor = document.getElementById("productos-pijama");
+    const filtroGenero = document.getElementById("filtro-genero-pijama");
+    const filtroTallaContenedor = document.getElementById("tallas-lista");
+    const filtroPrecio = document.getElementById("filter-price-pijama");
+    const filtroDescuento = document.getElementById("filter-discount-pijama");
+    const btnLimpiar = document.getElementById("clear-filters-pijama");
+
+    function cargarProductosPijama() {
+  actualizarFiltroTallas();
+  aplicarFiltros();
+}
+
+
+    function actualizarFiltroTallas() {
+      const productos = JSON.parse(localStorage.getItem("catalogoProductos") || "[]");
+      const tallasSet = new Set();
+
+      productos.forEach(p => {
+        if (p.categoria === "Pijama" && p.talla) {
+          const tallas = p.talla.split(",");
+          tallas.forEach(t => tallasSet.add(t.trim().toUpperCase()));
+        }
+      });
+
+      filtroTallaContenedor.innerHTML = "";
+      [...tallasSet].sort().forEach(t => {
+        const label = document.createElement("label");
+        label.innerHTML = `<input type="checkbox" value="${t}"/> ${t}`;
+        filtroTallaContenedor.appendChild(label);
+      });
+    }
+
+    function aplicarFiltros() {
+      const genero = filtroGenero.value.toLowerCase();
+      const precioOrden = filtroPrecio.value;
+      const soloDescuento = filtroDescuento.checked;
+      const tallasSeleccionadas = Array.from(filtroTallaContenedor.querySelectorAll("input:checked")).map(i => i.value.toUpperCase());
+
+      let cards = Array.from(document.querySelectorAll("#productos-pijama .producto-card"));
+
+      cards.forEach(card => {
+        const generoProd = card.getAttribute("data-genero")?.toLowerCase() || "";
+        const tallasProd = (card.getAttribute("data-tallas") || "").split(",").map(t => t.trim().toUpperCase());
+        const precio = parseFloat(card.getAttribute("data-precio"));
+        const descuento = parseFloat(card.getAttribute("data-descuento"));
+
+        let visible = true;
+
+        if (genero && generoProd !== genero) visible = false;
+        if (soloDescuento && descuento <= 0) visible = false;
+        if (tallasSeleccionadas.length > 0 && !tallasSeleccionadas.some(t => tallasProd.includes(t))) visible = false;
+
+        card.style.display = visible ? "block" : "none";
+      });
+
+      if (precioOrden !== "none") {
+        cards.sort((a, b) => {
+          const pa = parseFloat(a.getAttribute("data-precio"));
+          const pb = parseFloat(b.getAttribute("data-precio"));
+          return precioOrden === "asc" ? pa - pb : pb - pa;
+        });
+        cards.forEach(c => contenedor.appendChild(c));
+      }
+    }
+
+    filtroGenero.addEventListener("change", aplicarFiltros);
+    filtroPrecio.addEventListener("change", aplicarFiltros);
+    filtroDescuento.addEventListener("change", aplicarFiltros);
+    filtroTallaContenedor.addEventListener("change", aplicarFiltros);
+    btnLimpiar.addEventListener("click", () => {
+      filtroGenero.value = "";
+      filtroPrecio.value = "none";
+      filtroDescuento.checked = false;
+      filtroTallaContenedor.querySelectorAll("input").forEach(i => i.checked = false);
+      aplicarFiltros();
+    });
+
+    cargarProductosPijama();
+  });
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".producto-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const id = card.dataset.id;
+        const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+        localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
+        window.location.href = "visualizacion.html";
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Visualización del producto</title>
+  <link rel="stylesheet" href="estilos.css"/>
+  <style>
+    body {
+      background-color: #ffe6f0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #001f3f;
+      margin: 0;
+      padding: 0;
+    }
+    .contenedor-producto {
+      max-width: 1000px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      transition: all 0.3s ease;
+    }
+    .imagen {
+      flex: 1 1 50%;
+      background: linear-gradient(to bottom right, #f9f9f9, #eaeaea);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .imagen img {
+      max-width: 100%;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+    .imagen img:hover {
+      transform: scale(1.03);
+    }
+    .info {
+      flex: 1 1 50%;
+      padding: 40px 30px;
+      background: #ffffff;
+    }
+    .info h2 {
+      font-size: 28px;
+      color: #001f3f;
+      margin-bottom: 10px;
+    }
+    .info p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .info p strong {
+      color: #001f3f;
+    }
+    #selector-talla {
+      margin-top: 8px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      outline-color: #001f3f;
+      margin-bottom: 20px;
+    }
+    .botones-fijos {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px 10px 60px 10px;
+      background: transparent;
+    }
+    .botones-fijos button {
+      background: #001f3f;
+      color: white;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .botones-fijos button:hover {
+      background: #003366;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="contenedor-producto">
+    <div class="imagen" id="imagen-prod"></div>
+    <div class="info" id="detalle-producto"></div>
+  </div>
+
+  <div class="botones-fijos">
+    <button type="button" onclick="location.href='index.html'">Inicio</button>
+    <button type="button" id="btn-catalogo">Regresar al catálogo</button>
+    <button type="button" id="btn-agregar">Agregar al carrito</button>
+    <button type="button" onclick="location.href='carrito.html'">Carrito</button>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const KEY = "catalogoProductos";
+      const carritoKEY = "carrito";
+      const data = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
+      const productos = JSON.parse(localStorage.getItem(KEY) || "[]");
+      const prod = productos.find(p => p.id == data.id);
+
+      if (!prod) {
+        document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+        return;
+      }
+
+      document.getElementById("imagen-prod").innerHTML = `
+        <img src="${prod.fotos[0]}" alt="${prod.nombre}" />
+      `;
+
+      const hasDesc = prod.descuento && prod.descuento > 0;
+      const precioFinal = hasDesc
+        ? (prod.precio * (1 - prod.descuento / 100)).toFixed(2)
+        : prod.precio.toFixed(2);
+      const tallasDisponibles = prod.talla
+        ? prod.talla.split(",").map(t => t.trim())
+        : [];
+
+      let html = `
+        <h2>${prod.nombre}</h2>
+        ${hasDesc
+          ? `<p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+             <p><strong>Precio ahora:</strong> $${precioFinal}</p>
+             <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>`
+          : `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`}
+        ${prod.marca ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : ''}
+        ${prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : ''}
+        ${prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : ''}
+        ${prod.descripcion ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>` : ''}
+      `;
+
+      if (tallasDisponibles.length) {
+        html += `
+          <p><strong>Talla:</strong></p>
+          <select id="selector-talla">
+            <option value="">Seleccione una talla</option>
+            ${tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")}
+          </select>
+        `;
+      }
+
+      document.getElementById("detalle-producto").innerHTML = html;
+
+      document.getElementById("btn-agregar").addEventListener("click", () => {
+        const carrito = JSON.parse(localStorage.getItem(carritoKEY) || "[]");
+        const select = document.getElementById("selector-talla");
+        const talla = select ? select.value : "";
+
+        if (select && !talla) {
+          alert("Selecciona una talla");
+          return;
+        }
+
+        const item = { ...prod };
+        if (talla) item.tallaSeleccionada = talla;
+
+        carrito.push(item);
+        localStorage.setItem(carritoKEY, JSON.stringify(carrito));
+        alert("Producto agregado al carrito");
+      });
+
+      document.getElementById("btn-catalogo").addEventListener("click", () => {
+        const origen = data.origen;
+        const destino = origen === "index"
+          ? detectarCategoria(prod) + ".html"
+          : origen + ".html";
+        location.href = destino;
+      });
+
+      function detectarCategoria(prod) {
+        if (!prod.categoria) return "index";
+        const cat = prod.categoria.toLowerCase().replace(/\s+/g, '');
+        const mapa = {
+          lociones: "lociones",
+          gorras: "gorras",
+          maquillaje: "maquillaje",
+          pijama: "pijama",
+          ropadeportiva: "deportiva"
+        };
+        return mapa[cat] || "index";
+      }
+    });
+  </script>
+</body>
+</html>

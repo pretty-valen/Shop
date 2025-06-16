@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ropa Deportiva - Pretty</title>
+  <link rel="stylesheet" href="estilos.css"/>
+</head>
+<body>
+  <header>
+    <div class="menu-hamburguesa" id="hamburger">☰</div>
+    <h1 class="nombre-tienda">Pretty</h1>
+    <div class="icono-carrito">🛒</div>
+    <nav class="nav-menu" id="nav-menu"><ul></ul></nav>
+  </header>
+
+  <section class="imagen-central" id="deportiva">
+    <img src="imagenes/imagen.png" alt="Ropa Deportiva"/>
+  </section>
+
+  <main class="layout-lociones">
+    <aside id="filtros-deportiva">
+      <h3>Filtrar Ropa Deportiva</h3>
+
+      <div class="filtro-grupo">
+        <label for="filtro-genero-deportiva">Género:</label>
+        <select id="filtro-genero-deportiva">
+          <option value="">Todos</option>
+          <option value="Hombre">Hombre</option>
+          <option value="Mujer">Mujer</option>
+          <option value="Niño">Niño</option>
+          <option value="Niña">Niña</option>
+        </select>
+      </div>
+
+      <div class="filtro-grupo">
+        <label>Marca:</label>
+        <div id="filtro-marcas-deportiva"></div>
+      </div>
+
+      <div class="filtro-grupo">
+        <label>Talla:</label>
+        <div id="filtro-tallas-deportiva"></div>
+      </div>
+
+      <div class="filtro-grupo">
+        <label for="filtro-precio-deportiva">Orden precio:</label>
+        <select id="filtro-precio-deportiva">
+          <option value="">Sin ordenar</option>
+          <option value="asc">Menor a Mayor</option>
+          <option value="desc">Mayor a Menor</option>
+        </select>
+      </div>
+
+      <div class="filtro-grupo">
+        <label><input type="checkbox" id="filtro-descuento-deportiva"/> Solo con descuento</label>
+      </div>
+
+      <button id="btn-reset-filtros-deportiva">Limpiar filtros</button>
+    </aside>
+
+    <section class="productos" id="productos-deportiva" data-editable>
+      <!-- productos.js inyectará aquí las tarjetas -->
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <div class="footer-section" data-editable>
+        <h3>Acerca de Nosotros</h3>
+        <p>Pretty es una tienda en línea dedicada a ofrecer productos de belleza y moda con la mejor calidad y estilo.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Contáctanos</h3>
+        <p class="telefono">+57 123 456 7890</p>
+      </div>
+      <div class="footer-section">
+        <h3>Nuestras Redes</h3>
+        <a href="https://www.instagram.com/tu_cuenta" target="_blank">
+          <img src="imagenes/instagram.png" alt="Instagram" class="icono-redes"/>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modales admin -->
+  <div id="admin-login-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Acceso administrador</h2>
+      <input type="text" id="admin-user" placeholder="Usuario">
+      <input type="password" id="admin-pass" placeholder="Contraseña">
+      <button id="login-btn">Ingresar</button>
+    </div>
+  </div>
+
+  <div id="admin-catalogo-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-catalogo">&times;</span>
+      <h2>Añadir producto al catálogo</h2>
+      <form id="form-catalogo">
+        <input type="text" name="nombre" placeholder="Nombre" required>
+        <select id="categoria" name="categoria" required>
+          <option value="">Selecciona categoría</option>
+          <option value="Lociones">Lociones</option>
+          <option value="Gorras">Gorras</option>
+          <option value="Maquillaje">Maquillaje</option>
+          <option value="Pijama">Pijama</option>
+          <option value="Ropa Deportiva">Ropa Deportiva</option>
+        </select>
+        <input type="number" name="precio" placeholder="Precio" required>
+        <input type="text" name="descripcion" placeholder="Descripción">
+        <input type="number" name="descuento" placeholder="Descuento (%)">
+        <input type="file" id="fotos" multiple required>
+
+        <div id="deportiva-extra" style="display:none">
+          <input type="text" name="marcas" placeholder="Marca">
+          <input type="text" name="talla" placeholder="Tallas (ej: S,M,L)">
+          <select name="genero">
+            <option value="">Género</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Niño">Niño</option>
+            <option value="Niña">Niña</option>
+          </select>
+        </div>
+
+        <button type="submit">Guardar</button>
+      </form>
+    </div>
+  </div>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".producto-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const id = card.dataset.id;
+        const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+        localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
+        window.location.href = "visualizacion.html";
+      });
+    });
+  });
+</script>
+
+
+  <script src="menu.js"></script>
+  <script src="rotate.js"></script>
+  <script src="admin.js"></script>
+  <script src="productos.js"></script>
+</body>
+</html>
