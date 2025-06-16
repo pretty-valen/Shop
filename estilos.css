@@ -939,6 +939,74 @@ a.seccion {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
 }
+@media screen and (max-width: 768px) {
+  .imagen-central img {
+    width: 70%;
+    margin: 10px auto;
+    display: block;
+  }
+
+  .contenedor-secciones {
+    gap: 6px;
+    padding: 5px;
+    margin-top: 5px;
+  }
+
+  .producto-card img {
+    width: 100%;
+    height: auto;
+  }
+
+  .producto-card {
+    margin: 6px;
+    padding: 8px;
+  }
+
+  .filtros,
+  .filtros-gorras,
+  .filtros-pijama,
+  .filtros-lociones,
+  .filtros-maquillaje,
+  .filtros-deportiva {
+    width: 90%;
+    margin: 10px auto;
+  }
+
+  h1.nombre-tienda {
+    font-size: 20px;
+  }
+
+  .nav-menu {
+    width: 100%;
+  }
+
+  header {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .menu-hamburguesa {
+    font-size: 24px;
+    padding-left: 10px;
+  }
+
+  .icono-carrito {
+    font-size: 22px;
+    padding-right: 10px;
+  }
+
+  .producto-info h4 {
+    font-size: 14px;
+  }
+
+  .producto-info p {
+    font-size: 13px;
+  }
+
+  .producto-card {
+    font-size: 13px;
+  }
+}
 
 
 
