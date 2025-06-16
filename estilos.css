@@ -1063,38 +1063,6 @@ a.seccion {
     padding: 15px;
   }
 }
-@media screen and (max-width: 768px) {
-  body {
-    margin: 0;
-    padding: 0;
-  }
-
-  .imagen-central img {
-    width: 60%;
-    margin: 5px auto;
-    display: block;
-  }
-
-  .filtros,
-  .filtros-gorras,
-  .filtros-pijama,
-  .filtros-lociones,
-  .filtros-maquillaje,
-  .filtros-deportiva {
-    width: 92%;
-    margin: 10px auto 0;
-    padding: 10px;
-  }
-
-  footer,
-  #footer,
-  .footer {
-    width: 100vw;
-    margin: 0;
-    padding: 20px 15px;
-    box-sizing: border-box;
-  }
-}
 
 
 
