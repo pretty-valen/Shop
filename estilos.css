@@ -1007,6 +1007,63 @@ a.seccion {
     font-size: 13px;
   }
 }
+@media screen and (max-width: 768px) {
+  .imagen-central img {
+    width: 60%;
+    margin: 5px auto;
+    display: block;
+  }
+
+  .filtros,
+  .filtros-gorras,
+  .filtros-pijama,
+  .filtros-lociones,
+  .filtros-maquillaje,
+  .filtros-deportiva {
+    width: 92%;
+    margin: 10px auto 0;
+    padding: 10px;
+  }
+
+  .filtros h3,
+  .filtros-gorras h3,
+  .filtros-pijama h3,
+  .filtros-lociones h3,
+  .filtros-maquillaje h3,
+  .filtros-deportiva h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  .filtros label,
+  .filtros-gorras label,
+  .filtros-pijama label,
+  .filtros-lociones label,
+  .filtros-maquillaje label,
+  .filtros-deportiva label {
+    font-size: 14px;
+    margin-top: 5px;
+  }
+
+  .filtros select,
+  .filtros-gorras select,
+  .filtros-pijama select,
+  .filtros-lociones select,
+  .filtros-maquillaje select,
+  .filtros-deportiva select {
+    margin-bottom: 8px;
+  }
+
+  footer {
+    margin-top: 10px;
+  }
+
+  #footer,
+  .footer {
+    padding: 15px;
+  }
+}
+
 
 
 
