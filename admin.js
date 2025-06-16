@@ -112,107 +112,76 @@ if (grupoDeportiva) {
   toggleCamposExtra();
 
   form.addEventListener("submit", async e => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // 1) Leer fotos y convertir a Base64
-    const files = Array.from(document.getElementById("fotos").files);
-    if (!files.length) return alert("Selecciona al menos una imagen");
-    const fotos = await Promise.all(
-      files.map(file =>
-        new Promise(res => {
-          const reader = new FileReader();
-          reader.onload = () => res(reader.result);
-          reader.readAsDataURL(file);
-        })
-      )
-    );
+  const files = Array.from(document.getElementById("fotos").files);
+  if (!files.length) return alert("Selecciona al menos una imagen");
+  const fotos = await Promise.all(
+    files.map(file =>
+      new Promise(res => {
+        const reader = new FileReader();
+        reader.onload = () => res(reader.result);
+        reader.readAsDataURL(file);
+      })
+    )
+  );
 
-    // 2) Cargar listado actual
-    const productosList = JSON.parse(
-      localStorage.getItem("catalogoProductos") || "[]"
-    );
+  const nombre      = form.nombre.value.trim();
+  const categoria   = form.categoria.value;
+  const precio      = parseFloat(form.precio.value);
+  const descripcion = form.descripcion.value.trim();
+  const descuento   = parseFloat(form.descuento.value) || 0;
 
-   // 3) Leer campos comunes
-const nombre      = form.nombre.value.trim();
-const categoria   = form.categoria.value;
-const precio      = parseFloat(form.precio.value);
-const descripcion = form.descripcion.value.trim();
-const descuento   = parseFloat(form.descuento.value) || 0;
+  let marcasArr    = [];
+  let productosArr = [];
+  let isPack       = false;
+  let talla        = "";
+  let genero       = "";
 
-// 4) SOLO para Maquillaje
-let marcasArr    = [];
-let productosArr = [];
-let isPack       = false;
+  if (categoria === "Lociones") {
+    marcasArr = form.marcas.value.split(",").map(s => s.trim()).filter(Boolean);
+    genero = form.genero.value;
+  }
 
-// 5) SOLO para Lociones: marcas y género
-let talla  = "";
-let genero = "";
-if (categoria === "Lociones") {
-  marcasArr = form.marcas.value
-    .split(",")
-    .map(s => s.trim())
-    .filter(Boolean);
-  genero = form.genero.value;
-}
+  if (categoria === "Maquillaje" && form.marcas) {
+    marcasArr    = form.marcas.value.split(",").map(s => s.trim()).filter(Boolean);
+    productosArr = form.productos.value.split(",").map(s => s.trim()).filter(Boolean);
+    isPack       = form.isPack.checked;
+  }
 
-// 6) SOLO para Maquillaje: marcas/productos/pack
-if (categoria === "Maquillaje" && form.marcas) {
-  marcasArr    = form.marcas.value
-    .split(",")
-    .map(s => s.trim())
-    .filter(Boolean);
-  productosArr = form.productos.value
-    .split(",")
-    .map(s => s.trim())
-    .filter(Boolean);
-  isPack       = form.isPack.checked;
-}
+  if (categoria === "Pijama") {
+    talla  = form.talla.value.split(",").map(t => t.trim()).join(",");
+    genero = form.genero.value;
+  }
 
-// 7) SOLO para Pijama: talla/género
-if (categoria === "Pijama") {
-  talla  = form.talla.value
-    .split(",")
-    .map(t => t.trim())
-    .join(",");
-  genero = form.genero.value;
-}
+  const nuevo = {
+    fotos,
+    nombre,
+    categoria,
+    precio,
+    descripcion,
+    descuento,
+    marcas:    marcasArr,
+    productos: productosArr,
+    isPack,
+    talla,
+    genero
+  };
 
-// 8) Construir nuevo producto
-const nuevo = {
-  id:          Date.now(),
-  fotos,
-  nombre,
-  categoria,
-  precio,
-  descripcion,
-  descuento,
-  marcas:      marcasArr,
-  productos:   productosArr,
-  isPack,
-  talla,
-  genero
-};
-productosList.push(nuevo);
-localStorage.setItem("catalogoProductos", JSON.stringify(productosList));
-
-
-    // 9) Refrescar sección o recargar
-    const sec = document.getElementById(
-      `productos-${categoria.toLowerCase()}`
-    );
-    if (sec && window.renderSection) {
-      window.renderSection(
-        `productos-${categoria.toLowerCase()}`,
-        categoria
-      );
-    } else {
-        localStorage.removeItem("indexMixTs");
-        localStorage.removeItem("indexMixData");
-        location.reload();
-    }
-
-    alert("✅ Producto añadido");
+  const res = await fetch("https://admin-backend-ts85.onrender.com/productos", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(nuevo)
   });
+
+  if (res.ok) {
+    alert("✅ Producto añadido");
+    location.reload();
+  } else {
+    alert("❌ Error al guardar el producto");
+  }
+});
+
 
   // —————————————
   // BOTÓN FLOTANTE “Añadir al catálogo”
