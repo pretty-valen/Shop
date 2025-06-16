@@ -11,6 +11,11 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true
 });
 
+// Middleware con límite de carga aumentado
+app.use(cors());
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ extended: true, limit: '25mb' }));
+
 // Modelo de administrador
 const Admin = mongoose.model('Admin', new mongoose.Schema({
   usuario: String,
@@ -32,9 +37,6 @@ const productoSchema = new mongoose.Schema({
   genero: String
 });
 const Producto = mongoose.model("Producto", productoSchema);
-
-app.use(cors());
-app.use(express.json());
 
 // Ruta de login
 app.post('/login', async (req, res) => {
