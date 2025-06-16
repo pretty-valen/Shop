@@ -252,7 +252,7 @@ if (grupoDeportiva) {
     .catch(() => alert("❌ Error de red al eliminar"));
 }
 
-  }
+  
 
   async function openEditModal(id) {
   const res = await fetch("https://admin-backend-ts85.onrender.com/productos");
@@ -318,6 +318,7 @@ if (grupoDeportiva) {
   location.reload();
   alert("✅ Producto actualizado");
 };
+  }
 
 
   window.createAddCatBtn   = createAddCatBtn;
