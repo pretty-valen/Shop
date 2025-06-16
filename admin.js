@@ -49,10 +49,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Login
-  loginBtn.addEventListener("click", () => {
+    loginBtn.addEventListener("click", async () => {
     const u = document.getElementById("admin-user").value.trim();
     const p = document.getElementById("admin-pass").value.trim();
-    if (u === "admin" && p === "1234") {
+
+    const res = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ usuario: u, clave: p })
+    });
+
+    if (res.ok) {
       localStorage.setItem(STORAGE_ADMIN, "true");
       touchSession();
       adminModal.classList.remove("open");
@@ -62,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Credenciales incorrectas");
     }
   });
+
   closeLogin.addEventListener("click", () => adminModal.classList.remove("open"));
   closeCat.addEventListener("click", () => catalogoModal.classList.remove("open"));
 
