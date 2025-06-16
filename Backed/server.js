@@ -7,8 +7,8 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-const ADMIN_USER = "Valentina diez";
-const ADMIN_PASS = "Valen.1020";
+const ADMIN_USER = process.env.ADMIN_USER;
+const ADMIN_PASS = process.env.ADMIN_PASS;
 
 app.post('/login', (req, res) => {
   const { usuario, clave } = req.body;
