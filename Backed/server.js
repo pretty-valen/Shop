@@ -11,8 +11,11 @@ const PORT = process.env.PORT || 3000;
 // Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  ssl: true,
+  tlsAllowInvalidCertificates: false
 });
+
 
 // Middleware con límite de carga aumentado
 app.use(cors());
