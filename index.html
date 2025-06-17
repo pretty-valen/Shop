@@ -183,17 +183,35 @@
     });
   </script>
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".producto-card").forEach(card => {
+document.addEventListener("DOMContentLoaded", async () => {
+  const contenedor = document.getElementById("productos-destacados");
+
+  try {
+    const res = await fetch("https://admin-backend-ts85.onrender.com/productos");
+    const productos = await res.json();
+
+    productos.slice(0, 5).forEach(p => {
+      const card = document.createElement("div");
+      card.className = "producto-card";
+      card.dataset.id = p._id;
+      card.innerHTML = `
+        <img src="${p.fotos[0]}" alt="${p.nombre}" />
+        <h3>${p.nombre}</h3>
+        <p>$${p.precio}</p>
+      `;
       card.addEventListener("click", () => {
-        const id = card.dataset.id;
-        const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
-        localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
+        const origen = "index";
+        localStorage.setItem("productoSeleccionado", JSON.stringify({ id: p._id, origen }));
         window.location.href = "visualizacion.html";
       });
+      contenedor.appendChild(card);
     });
-  });
+  } catch (err) {
+    console.error("Error al cargar productos:", err);
+  }
+});
 </script>
+
 
 </body>
 </html>
