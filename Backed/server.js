@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -14,21 +13,12 @@ mongoose.connect(process.env.MONGODB_URI, {
   useUnifiedTopology: true
 });
 
-
-
 // Middleware con límite de carga aumentado
 app.use(cors({
   origin: "https://pretty-valen.github.io"
 }));
-
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
-
-// Modelo de administrador
-const Admin = mongoose.model('Admin', new mongoose.Schema({
-  usuario: String,
-  clave: String
-}));
 
 // Modelo de producto
 const productoSchema = new mongoose.Schema({
@@ -46,11 +36,13 @@ const productoSchema = new mongoose.Schema({
 });
 const Producto = mongoose.model("Producto", productoSchema);
 
-// Ruta de login
-app.post('/login', async (req, res) => {
+// Ruta de login con variables de entorno
+app.post('/login', (req, res) => {
   const { usuario, clave } = req.body;
-  const admin = await Admin.findOne({ usuario, clave });
-  if (admin) {
+  if (
+    usuario === process.env.ADMIN_USER &&
+    clave === process.env.ADMIN_PASS
+  ) {
     return res.status(200).json({ success: true, token: "admin_token" });
   }
   res.status(401).json({ success: false, message: "Credenciales incorrectas" });
