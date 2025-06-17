@@ -232,18 +232,6 @@
     cargarProductosPijama();
   });
   </script>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".producto-card").forEach(card => {
-      card.addEventListener("click", () => {
-        const id = card.dataset.id;
-        const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
-        localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
-        window.location.href = "visualizacion.html";
-      });
-    });
-  });
-</script>
 
 </body>
 </html>

@@ -153,6 +153,12 @@ if (grupoDeportiva) {
     talla  = form.talla.value.split(",").map(t => t.trim()).join(",");
     genero = form.genero.value;
   }
+  if (categoria === "Ropa Deportiva") {
+  marcasArr = form.marcas.value.split(",").map(s => s.trim()).filter(Boolean);
+  talla     = form.talla.value.split(",").map(t => t.trim()).join(",");
+  genero    = form.genero.value;
+}
+
 
   const nuevo = {
     fotos,
