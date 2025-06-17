@@ -246,11 +246,16 @@ if (grupoDeportiva) {
     method: "DELETE"
   })
     .then(res => {
-      if (res.ok) location.reload();
-      else alert("❌ No se pudo eliminar el producto");
+      if (!res.ok) throw new Error("No se pudo eliminar");
+      alert("Producto eliminado");
+      location.reload();
     })
-    .catch(() => alert("❌ Error de red al eliminar"));
+    .catch(err => {
+      console.error(err);
+      alert("Error al eliminar producto");
+    });
 }
+
 
   
 
