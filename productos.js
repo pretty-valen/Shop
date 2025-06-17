@@ -336,6 +336,9 @@ let filtroDescuentoDep = false;
 
 });
 document.addEventListener("click", (e) => {
+  // Ignorar si se hizo clic en el botón eliminar
+  if (e.target.closest(".eliminar-btn")) return;
+
   const card = e.target.closest(".producto-card");
   if (!card) return;
 
@@ -344,6 +347,7 @@ document.addEventListener("click", (e) => {
   localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
   location.href = "visualizacion.html";
 });
+
 
 
 
