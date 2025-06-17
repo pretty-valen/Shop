@@ -13,6 +13,34 @@ fetch("https://admin-backend-ts85.onrender.com/productos")
   .then(res => res.json())
   .then(data => {
     productos = data;
+    
+    if (esMaquillajePage) {
+  const cbBrand = document.getElementById("filter-brand-container");
+  const cbProd  = document.getElementById("filter-product-container");
+  cbBrand.innerHTML = "";
+  cbProd.innerHTML  = "";
+
+  uniqueSorted(productos.filter(p=>p.categoria==="Maquillaje").flatMap(p=>p.marcas || []))
+    .forEach(marca => {
+      const id="mbq-"+marca.replace(/\s+/g,"");
+      const cb=document.createElement("input");
+      cb.type="checkbox"; cb.id=id; cb.value=marca;
+      cb.onchange=()=>{cb.checked?filterBrandsMQ.add(marca):filterBrandsMQ.delete(marca);renderSection("productos-maquillaje","Maquillaje");};
+      const lbl=document.createElement("label"); lbl.htmlFor=id; lbl.textContent=marca;
+      cbBrand.append(cb,lbl,document.createElement("br"));
+    });
+
+  uniqueSorted(productos.filter(p=>p.categoria==="Maquillaje").flatMap(p=>p.productos || []))
+    .forEach(prod => {
+      const id="pbq-"+prod.replace(/\s+/g,"");
+      const cb=document.createElement("input");
+      cb.type="checkbox"; cb.id=id; cb.value=prod;
+      cb.onchange=()=>{cb.checked?filterProductsMQ.add(prod):filterProductsMQ.delete(prod);renderSection("productos-maquillaje","Maquillaje");};
+      const lbl=document.createElement("label"); lbl.htmlFor=id; lbl.textContent=prod;
+      cbProd.append(cb,lbl,document.createElement("br"));
+    });
+}
+
     // Regenerar dinámicamente los filtros tras obtener productos
 if (esLocionesPage) {
   const contMar= document.getElementById("filtro-marcas");
@@ -212,6 +240,7 @@ let filtroDescuentoDep = false;
   let filterPackMQ       = false;
 
   // ————— Variables de filtro pijamas —————
+  let filtroTallasPj = new Set();
   let filterPriceOrderPJ = "none";
   let filterDiscountPJ   = false;
 
@@ -275,6 +304,8 @@ let filtroDescuentoDep = false;
         const lbl=document.createElement("label"); lbl.htmlFor=id; lbl.textContent=marca;
         cbBrand.append(cb,lbl,document.createElement("br"));
       });
+  
+
 
     uniqueSorted(productos.filter(p=>p.categoria==="Maquillaje").flatMap(p=>p.productos||[]))
       .forEach(prod => {
@@ -299,6 +330,23 @@ let filtroDescuentoDep = false;
       renderSection("productos-maquillaje","Maquillaje");
     };
   }
+    if (esPijamaPage) {
+  const contTal = document.getElementById("tallas-lista");
+  contTal.innerHTML = "";
+  uniqueSorted(productos.filter(p => p.categoria === "Pijama").flatMap(p => (p.talla || "").split(",")))
+    .forEach(talla => {
+      const id = "tpj-" + talla.replace(/\s+/g, "");
+      const chk = document.createElement("input");
+      chk.type = "checkbox"; chk.id = id; chk.value = talla;
+      chk.onchange = () => {
+        chk.checked ? filtroTallasPj.add(talla) : filtroTallasPj.delete(talla);
+        renderSection("productos-pijama", "Pijama");
+      };
+      const lbl = document.createElement("label");
+      lbl.htmlFor = id; lbl.textContent = talla;
+      contTal.append(chk, lbl, document.createElement("br"));
+    });
+}
 
   if (esPijamaPage) {
     const selPj = document.getElementById("filter-price-pijama");
@@ -403,10 +451,16 @@ let filtroDescuentoDep = false;
       if (filterPriceOrderMQ==="desc") lista.sort((a,b)=>b.precio-a.precio);
     }
 
-    if (esPijamaPage && category==="Pijama") {
-      if (filterDiscountPJ) lista = lista.filter(p => p.descuento > 0);
-      if (filterPriceOrderPJ === "asc")  lista.sort((a,b) => a.precio - b.precio);
-      if (filterPriceOrderPJ === "desc") lista.sort((a,b) => b.precio - a.precio);
+if (esPijamaPage && category==="Pijama") {
+  if (filterDiscountPJ) lista = lista.filter(p => p.descuento > 0);
+  if (filterPriceOrderPJ === "asc")  lista.sort((a,b) => a.precio - b.precio);
+  if (filterPriceOrderPJ === "desc") lista.sort((a,b) => b.precio - a.precio);
+  if (filtroTallasPj.size) lista = lista.filter(p =>
+    p.talla && p.talla.split(",").some(t => filtroTallasPj.has(t.trim()))
+  );
+}
+
+
     }
     if (esDeportivaPage && category==="Ropa Deportiva") {
   if (filtroGeneroDep) lista=lista.filter(p=>p.genero===filtroGeneroDep);
@@ -426,7 +480,7 @@ let filtroDescuentoDep = false;
   }
 
 
-});
+);
 
 
 
