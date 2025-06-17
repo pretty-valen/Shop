@@ -1,10 +1,6 @@
 function verDetalleProducto(id) {
-  const productos = JSON.parse(localStorage.getItem("catalogoProductos") || "[]");
-  const prod = productos.find(p => p.id == id || p._id == id);
-  if (!prod) return;
-
   const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
-  localStorage.setItem("productoSeleccionado", JSON.stringify({ id: prod.id, origen }));
+  localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
   window.location.href = "visualizacion.html";
 }
 
