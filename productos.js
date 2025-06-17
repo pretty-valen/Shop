@@ -29,7 +29,27 @@ fetch("https://admin-backend-ts85.onrender.com/productos")
   }
 }
 
-    iniciarRenderizado(); // función nueva que manejará todo lo que antes dependía de `productos`
+    iniciarRenderizado();
+    document.getElementById("contenedor-productos")?.addEventListener("click", e => {
+  const btn = e.target.closest(".eliminar-btn");
+  const card = e.target.closest(".producto-card");
+
+  if (!card) return;
+
+  const id = card.getAttribute("data-id");
+
+  if (btn) {
+    fetch(`https://admin-backend-ts85.onrender.com/productos/${id}`, {
+      method: "DELETE"
+    }).then(() => location.reload());
+    return;
+  }
+
+  const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
+  localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
+  location.href = "visualizacion.html";
+});
+ // función nueva que manejará todo lo que antes dependía de `productos`
   })
   .catch(err => console.error("Error cargando productos:", err));
 
@@ -335,18 +355,7 @@ let filtroDescuentoDep = false;
 
 
 });
-document.addEventListener("click", (e) => {
-  // Ignorar si se hizo clic en el botón eliminar
-  if (e.target.closest(".eliminar-btn")) return;
 
-  const card = e.target.closest(".producto-card");
-  if (!card) return;
-
-  const id = card.getAttribute("data-id");
-  const origen = window.location.pathname.split("/").pop().replace(".html", "") || "index";
-  localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
-  location.href = "visualizacion.html";
-});
 
 
 
