@@ -11,7 +11,32 @@ function verDetalleProducto(id) {
 
 document.addEventListener("DOMContentLoaded", () => {
   const KEY = "catalogoProductos";
-  const productos = JSON.parse(localStorage.getItem(KEY) || "[]");
+  let productos = [];
+
+fetch("https://admin-backend-ts85.onrender.com/productos")
+  .then(res => res.json())
+  .then(data => {
+    productos = data;
+    function iniciarRenderizado() {
+  if (esIndexPage) {
+    renderMixed();
+  } else {
+    [
+      {id:"productos-lociones",   cat:"Lociones"},
+      {id:"productos-gorras",     cat:"Gorras"},
+      {id:"productos-maquillaje", cat:"Maquillaje"},
+      {id:"productos-pijama",     cat:"Pijama"},
+      {id:"productos-deportiva",  cat:"Ropa Deportiva"}
+    ].forEach(({id,cat}) => {
+      if (document.getElementById(id)) renderSection(id,cat);
+    });
+  }
+}
+
+    iniciarRenderizado(); // función nueva que manejará todo lo que antes dependía de `productos`
+  })
+  .catch(err => console.error("Error cargando productos:", err));
+
 
   // ————— Plantilla de tarjeta de producto —————
   function renderProductCard(p) {
@@ -343,20 +368,7 @@ let filtroDescuentoDep = false;
     }
   }
 
-  // ————————— Llamada inicial —————————
-  if (esIndexPage) {
-    renderMixed();
-  } else {
-    [
-      {id:"productos-lociones",   cat:"Lociones"},
-      {id:"productos-gorras",     cat:"Gorras"},
-      {id:"productos-maquillaje", cat:"Maquillaje"},
-      {id:"productos-pijama",     cat:"Pijama"},
-      {id:"productos-deportiva",  cat:"Ropa Deportiva"}
-    ].forEach(({id,cat}) => {
-      if (document.getElementById(id)) renderSection(id,cat);
-    });
-  }
+
 });
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".producto-card");
