@@ -15,6 +15,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 
+
 // Middleware con límite de carga aumentado
 app.use(cors({
   origin: "https://pretty-valen.github.io"
