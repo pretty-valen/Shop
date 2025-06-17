@@ -1,5 +1,5 @@
 require('dotenv').config();
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Paso 1
+
 
 const express = require('express');
 const cors = require('cors');
@@ -11,10 +11,9 @@ const PORT = process.env.PORT || 3000;
 // Conexión a MongoDB Atlas
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  ssl: true,
-  tlsAllowInvalidCertificates: false
+  useUnifiedTopology: true
 });
+
 
 
 // Middleware con límite de carga aumentado
