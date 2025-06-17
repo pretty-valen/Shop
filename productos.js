@@ -13,6 +13,78 @@ fetch("https://admin-backend-ts85.onrender.com/productos")
   .then(res => res.json())
   .then(data => {
     productos = data;
+    // Regenerar dinámicamente los filtros tras obtener productos
+if (esLocionesPage) {
+  const contMar= document.getElementById("filtro-marcas");
+  contMar.innerHTML = "";
+  uniqueSorted(productos.filter(p=>p.categoria==="Lociones").flatMap(p=>p.marcas||[]))
+    .forEach(marca => {
+      const id = "m-"+marca.replace(/\s+/g,"");
+      const chk = document.createElement("input");
+      chk.type="checkbox"; chk.id=id; chk.value=marca;
+      chk.onchange = () => {
+        chk.checked ? filtroMarcasSet.add(marca):filtroMarcasSet.delete(marca);
+        renderSection("productos-lociones","Lociones");
+      };
+      const lbl = document.createElement("label");
+      lbl.htmlFor=id; lbl.textContent=marca;
+      contMar.append(chk,lbl,document.createElement("br"));
+    });
+}
+
+if (esDeportivaPage) {
+  const contMar= document.getElementById("filtro-marcas-deportiva");
+  const contTal= document.getElementById("filtro-tallas-deportiva");
+  contMar.innerHTML = "";
+  contTal.innerHTML = "";
+  uniqueSorted(productos.filter(p=>p.categoria==="Ropa Deportiva").flatMap(p=>(p.marcas || [])))
+    .forEach(marca => {
+      const id = "mdep-"+marca.replace(/\s+/g,"");
+      const chk = document.createElement("input");
+      chk.type="checkbox"; chk.id=id; chk.value=marca;
+      chk.onchange = () => {
+        chk.checked ? filtroMarcasDep.add(marca) : filtroMarcasDep.delete(marca);
+        renderSection("productos-deportiva","Ropa Deportiva");
+      };
+      const lbl = document.createElement("label");
+      lbl.htmlFor=id; lbl.textContent=marca;
+      contMar.append(chk,lbl,document.createElement("br"));
+    });
+
+  uniqueSorted(productos.filter(p=>p.categoria==="Ropa Deportiva").flatMap(p=>(p.talla || "").split(",")))
+    .forEach(talla => {
+      const id = "tdep-"+talla.replace(/\s+/g,"");
+      const chk = document.createElement("input");
+      chk.type="checkbox"; chk.id=id; chk.value=talla;
+      chk.onchange = () => {
+        chk.checked ? filtroTallasDep.add(talla) : filtroTallasDep.delete(talla);
+        renderSection("productos-deportiva","Ropa Deportiva");
+      };
+      const lbl = document.createElement("label");
+      lbl.htmlFor=id; lbl.textContent=talla;
+      contTal.append(chk,lbl,document.createElement("br"));
+      const contTal = document.getElementById("filtro-tallas-pijama");
+let filtroTallasPj = new Set();
+
+contTal.innerHTML = "";
+uniqueSorted(productos.filter(p=>p.categoria==="Pijama").flatMap(p=>(p.talla || "").split(",")))
+  .forEach(talla => {
+    const id = "tpj-"+talla.replace(/\s+/g,"");
+    const chk = document.createElement("input");
+    chk.type="checkbox"; chk.id=id; chk.value=talla;
+    chk.onchange = () => {
+      chk.checked ? filtroTallasPj.add(talla) : filtroTallasPj.delete(talla);
+      renderSection("productos-pijama","Pijama");
+    };
+    const lbl = document.createElement("label");
+    lbl.htmlFor=id; lbl.textContent=talla;
+    contTal.append(chk,lbl,document.createElement("br"));
+  });
+
+    });
+    
+}
+
     function iniciarRenderizado() {
   if (esIndexPage) {
     renderMixed();
