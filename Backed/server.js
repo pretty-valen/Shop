@@ -18,7 +18,10 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 
 // Middleware con límite de carga aumentado
-app.use(cors());
+app.use(cors({
+  origin: "https://pretty-valen.github.io"
+}));
+
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
