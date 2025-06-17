@@ -218,7 +218,7 @@ if (grupoDeportiva) {
   function enableEditDelete() {
     document.querySelectorAll(".producto-card").forEach(card => {
       if (card.querySelector(".admin-controls")) return;
-      const id    = +card.dataset.id;
+      const id    = card.dataset.id;
       const ctrl  = document.createElement("div");
       ctrl.className = "admin-controls";
       Object.assign(ctrl.style, {
