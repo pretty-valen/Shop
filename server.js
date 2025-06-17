@@ -71,3 +71,13 @@ app.get("/productos", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor autenticación corriendo en http://localhost:${PORT}`);
 });
+// Eliminar producto
+app.delete("/productos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Producto.findByIdAndDelete(id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
