@@ -1,4 +1,6 @@
 require('dotenv').config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; // Paso 1
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
