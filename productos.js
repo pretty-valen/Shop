@@ -96,47 +96,16 @@ let filtroDescuentoDep = false;
       .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
   }
 
-  // ————————— Mix para index (hasta 5 de cada) —————————
-  const MIX_TS_KEY   = "indexMixTs";
-  const MIX_DATA_KEY = "indexMixData";
-  function getMixed() {
-    const now    = Date.now();
-    const lastTs = parseInt(localStorage.getItem(MIX_TS_KEY) || "0", 10);
-    if (now - lastTs < 24 * 3600 * 1000) {
-      return JSON.parse(localStorage.getItem(MIX_DATA_KEY) || "[]");
-    }
-    const cats = ["Lociones","Gorras","Maquillaje","Pijama","Ropa Deportiva"];
-    let mixed = cats.flatMap(cat => {
-      const list = productos.filter(p => p.categoria === cat);
-      list.sort(() => Math.random() - 0.5);
-      return list.slice(0, 5);
-    });
-    mixed.sort(() => Math.random() - 0.5);
-    localStorage.setItem(MIX_DATA_KEY, JSON.stringify(mixed));
-    localStorage.setItem(MIX_TS_KEY, now.toString());
-    return mixed;
-  }
+  
 
   function renderMixed() {
-    const mixed = getMixed();
+    const mixed = productos
+  .filter(p => ["Lociones", "Gorras", "Maquillaje", "Pijama", "Ropa Deportiva"].includes(p.categoria))
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 20);
+
     contIndex.innerHTML = mixed.map(p => renderProductCard(p)).join("");
-    if (localStorage.getItem("isAdmin") === "true" && !document.getElementById("btn-reload-mix")) {
-      const btn = document.createElement("button");
-      btn.id = "btn-reload-mix";
-      btn.textContent = "Recargar Productos";
-      Object.assign(btn.style, {
-        position: "fixed", bottom: "20px", right: "160px",
-        padding: "12px 16px", background: "#ffc0cb",
-        color: "#001f3f", border: "none",
-        borderRadius: "4px", cursor: "pointer", zIndex: "1000"
-      });
-      btn.onclick = () => {
-        localStorage.removeItem(MIX_TS_KEY);
-        localStorage.removeItem(MIX_DATA_KEY);
-        renderMixed();
-      };
-      document.body.appendChild(btn);
-    }
+
   }
 
   // ————— Variables de filtro —————
