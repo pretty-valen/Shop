@@ -103,16 +103,20 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const id = new URLSearchParams(window.location.search).get("id");
-      if (!id) {
-        document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
+      const categoria = params.get("categoria");
+      const contDetalle = document.getElementById("detalle-producto");
+      if (!id || !categoria) {
+        contDetalle.innerText = "Producto no encontrado.";
         return;
       }
-      fetch(`https://admin-backend-ts85.onrender.com/productos/${id}`)
+      fetch(`https://admin-backend-ts85.onrender.com/productos?categoria=${categoria}`)
         .then(res => res.ok ? res.json() : Promise.reject())
-        .then(prod => {
-          if (!prod || !prod.id) {
-            document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+        .then(list => {
+          const prod = list.find(p => String(p.id) === id);
+          if (!prod) {
+            contDetalle.innerText = "Producto no encontrado.";
             return;
           }
           document.getElementById("imagen-prod").innerHTML =
@@ -149,7 +153,7 @@
               </select>
             `;
           }
-          document.getElementById("detalle-producto").innerHTML = html;
+          contDetalle.innerHTML = html;
 
           document.getElementById("btn-agregar").onclick = () => {
             const select = document.getElementById("selector-talla");
@@ -167,14 +171,11 @@
           };
 
           document.getElementById("btn-catalogo").onclick = () => {
-            const cat = prod.categoria
-              ? prod.categoria.toLowerCase().replace(/\s+/g, "")
-              : "index";
-            location.href = `${cat}.html`;
+            location.href = `${categoria.toLowerCase().replace(/\s+/g,'')}.html`;
           };
         })
         .catch(() => {
-          document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+          contDetalle.innerText = "Error cargando el producto.";
         });
     });
   </script>
