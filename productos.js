@@ -441,10 +441,9 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 });
   // Al final de productos.js
-  window.verDetalleProducto = id => {
-    const origen = location.pathname.split("/").pop().replace(".html","") || "index";
-    localStorage.setItem("productoSeleccionado",
-      JSON.stringify({ id, origen })
-    );
+  function verDetalleProducto(id) {
+  window.location.href = `visualizacion.html?id=${id}`;
+}
+
     location.href = "visualizacion.html";
-  };
+  

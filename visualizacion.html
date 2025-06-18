@@ -101,90 +101,82 @@
     <button onclick="location.href='carrito.html'">Carrito</button>
   </div>
 
- <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const sel = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
-    if (!sel.id) {
-      document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
-      return;
-    }
-    fetch("https://admin-backend-ts85.onrender.com/productos")
-      .then(res => res.json())
-      .then(productos => {
-        const prod = productos.find(p => String(p.id) === String(sel.id));
-        if (!prod) {
-          document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
-          return;
-        }
-        // render imagen
-        document.getElementById("imagen-prod").innerHTML =
-          `<img src="${prod.fotos[0]}" alt="${prod.nombre}">`;
-        // detalles
-        const hasDesc = prod.descuento > 0;
-        const precioFinal = hasDesc
-          ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
-          : prod.precio.toFixed(2);
-        const tallas = prod.talla
-          ? prod.talla.split(",").map(t => t.trim())
-          : [];
-        let html = `<h2>${prod.nombre}</h2>`;
-        if (hasDesc) {
-          html += `
-            <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
-            <p><strong>Precio ahora:</strong> $${precioFinal}</p>
-            <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
-          `;
-        } else {
-          html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
-        }
-        html += prod.marca    ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
-        html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
-        html += prod.categoria? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
-        html += prod.descripcion
-                ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
-                : "";
-        if (tallas.length) {
-          html += `
-            <p><strong>Talla:</strong></p>
-            <select id="selector-talla">
-              <option value="">Seleccione una talla</option>
-              ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
-            </select>
-          `;
-        }
-        document.getElementById("detalle-producto").innerHTML = html;
-
-        // botón agregar
-        document.getElementById("btn-agregar").onclick = () => {
-          const carritoKey = "carrito";
-          const carrito = JSON.parse(localStorage.getItem(carritoKey) || "[]");
-          const select = document.getElementById("selector-talla");
-          if (select && !select.value) {
-            alert("Selecciona una talla");
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const id = new URLSearchParams(window.location.search).get("id");
+      if (!id) {
+        document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+        return;
+      }
+      fetch(`https://admin-backend-ts85.onrender.com/productos/${id}`)
+        .then(res => res.ok ? res.json() : Promise.reject())
+        .then(prod => {
+          if (!prod || !prod.id) {
+            document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
             return;
           }
-          const item = { ...prod };
-          if (select) item.tallaSeleccionada = select.value;
-          carrito.push(item);
-          localStorage.setItem(carritoKey, JSON.stringify(carrito));
-          alert("Producto agregado al carrito");
-        };
+          document.getElementById("imagen-prod").innerHTML =
+            `<img src="${prod.fotos[0]}" alt="${prod.nombre}">`;
+          const hasDesc = prod.descuento > 0;
+          const precioFinal = hasDesc
+            ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
+            : prod.precio.toFixed(2);
+          const tallas = prod.talla
+            ? prod.talla.split(",").map(t => t.trim())
+            : [];
+          let html = `<h2>${prod.nombre}</h2>`;
+          if (hasDesc) {
+            html += `
+              <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+              <p><strong>Precio ahora:</strong> $${precioFinal}</p>
+              <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
+            `;
+          } else {
+            html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
+          }
+          html += prod.marca    ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
+          html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
+          html += prod.categoria? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
+          html += prod.descripcion
+                  ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
+                  : "";
+          if (tallas.length) {
+            html += `
+              <p><strong>Talla:</strong></p>
+              <select id="selector-talla">
+                <option value="">Seleccione una talla</option>
+                ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
+              </select>
+            `;
+          }
+          document.getElementById("detalle-producto").innerHTML = html;
 
-        // botón catálogo
-        document.getElementById("btn-catalogo").onclick = () => {
-          const ori = sel.origen || "index";
-          const cat = prod.categoria
-            ? prod.categoria.toLowerCase().replace(/\s+/g, "")
-            : "index";
-          const destino = ori === "index" ? `${cat}.html` : `${ori}.html`;
-          location.href = destino;
-        };
-      })
-      .catch(() => {
-        document.getElementById("detalle-producto").innerText = "Error cargando el producto.";
-      });
-  });
-</script>
+          document.getElementById("btn-agregar").onclick = () => {
+            const select = document.getElementById("selector-talla");
+            if (select && !select.value) {
+              alert("Selecciona una talla");
+              return;
+            }
+            const carritoKey = "carrito";
+            const carrito = JSON.parse(localStorage.getItem(carritoKey) || "[]");
+            const item = { ...prod };
+            if (select) item.tallaSeleccionada = select.value;
+            carrito.push(item);
+            localStorage.setItem(carritoKey, JSON.stringify(carrito));
+            alert("Producto agregado al carrito");
+          };
 
+          document.getElementById("btn-catalogo").onclick = () => {
+            const cat = prod.categoria
+              ? prod.categoria.toLowerCase().replace(/\s+/g, "")
+              : "index";
+            location.href = `${cat}.html`;
+          };
+        })
+        .catch(() => {
+          document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+        });
+    });
+  </script>
 </body>
 </html>
