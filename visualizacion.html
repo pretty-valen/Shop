@@ -19,9 +19,9 @@
       background: white;
       border-radius: 12px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
       display: flex;
       flex-wrap: wrap;
+      overflow: hidden;
       transition: all 0.3s ease;
     }
     .imagen {
@@ -47,7 +47,6 @@
     }
     .info h2 {
       font-size: 28px;
-      color: #001f3f;
       margin-bottom: 10px;
     }
     .info p {
@@ -58,21 +57,19 @@
       color: #001f3f;
     }
     #selector-talla {
-      margin-top: 8px;
-      padding: 10px;
       width: 100%;
+      padding: 10px;
       font-size: 16px;
-      border-radius: 6px;
       border: 1px solid #ccc;
+      border-radius: 6px;
       outline-color: #001f3f;
-      margin-bottom: 20px;
+      margin: 8px 0 20px;
     }
     .botones-fijos {
       display: flex;
       justify-content: center;
       gap: 20px;
-      padding: 30px 10px 60px 10px;
-      background: transparent;
+      padding: 30px 10px 60px;
     }
     .botones-fijos button {
       background: #001f3f;
@@ -98,56 +95,57 @@
   </div>
 
   <div class="botones-fijos">
-    <button type="button" onclick="location.href='index.html'">Inicio</button>
-    <button type="button" id="btn-catalogo">Regresar al catálogo</button>
-    <button type="button" id="btn-agregar">Agregar al carrito</button>
-    <button type="button" onclick="location.href='carrito.html'">Carrito</button>
+    <button onclick="location.href='index.html'">Inicio</button>
+    <button id="btn-catalogo">Regresar al catálogo</button>
+    <button id="btn-agregar">Agregar al carrito</button>
+    <button onclick="location.href='carrito.html'">Carrito</button>
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const KEY = "catalogoProductos";
-      const carritoKEY = "carrito";
-      const data = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
+      const CART = "carrito";
+      const sel = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
       const productos = JSON.parse(localStorage.getItem(KEY) || "[]");
-      const prod = productos.find(p => p.id == data.id);
+      const prod = productos.find(p => String(p.id) === String(sel.id));
 
       if (!prod) {
         document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
         return;
       }
 
-      document.getElementById("imagen-prod").innerHTML = `
-        <img src="${prod.fotos[0]}" alt="${prod.nombre}" />
-      `;
+      document.getElementById("imagen-prod").innerHTML =
+        `<img src="${prod.fotos[0]}" alt="${prod.nombre}" />`;
 
-      const hasDesc = prod.descuento && prod.descuento > 0;
+      const hasDesc = prod.descuento > 0;
       const precioFinal = hasDesc
         ? (prod.precio * (1 - prod.descuento / 100)).toFixed(2)
         : prod.precio.toFixed(2);
-      const tallasDisponibles = prod.talla
+      const tallas = prod.talla
         ? prod.talla.split(",").map(t => t.trim())
         : [];
 
-      let html = `
-        <h2>${prod.nombre}</h2>
-        ${hasDesc
-          ? `<p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
-             <p><strong>Precio ahora:</strong> $${precioFinal}</p>
-             <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>`
-          : `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`}
-        ${prod.marca ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : ''}
-        ${prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : ''}
-        ${prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : ''}
-        ${prod.descripcion ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>` : ''}
-      `;
+      let html = `<h2>${prod.nombre}</h2>`;
+      if (hasDesc) {
+        html += `
+          <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+          <p><strong>Precio ahora:</strong> $${precioFinal}</p>
+          <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
+        `;
+      } else {
+        html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
+      }
+      html += prod.marca ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
+      html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
+      html += prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
+      html += prod.descripcion ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>` : "";
 
-      if (tallasDisponibles.length) {
+      if (tallas.length) {
         html += `
           <p><strong>Talla:</strong></p>
           <select id="selector-talla">
             <option value="">Seleccione una talla</option>
-            ${tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")}
+            ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
           </select>
         `;
       }
@@ -155,43 +153,26 @@
       document.getElementById("detalle-producto").innerHTML = html;
 
       document.getElementById("btn-agregar").addEventListener("click", () => {
-        const carrito = JSON.parse(localStorage.getItem(carritoKEY) || "[]");
+        const carrito = JSON.parse(localStorage.getItem(CART) || "[]");
         const select = document.getElementById("selector-talla");
         const talla = select ? select.value : "";
-
         if (select && !talla) {
           alert("Selecciona una talla");
           return;
         }
-
-        const item = { ...prod };
-        if (talla) item.tallaSeleccionada = talla;
-
+        const item = { ...prod, ...(talla && { tallaSeleccionada: talla }) };
         carrito.push(item);
-        localStorage.setItem(carritoKEY, JSON.stringify(carrito));
+        localStorage.setItem(CART, JSON.stringify(carrito));
         alert("Producto agregado al carrito");
       });
 
       document.getElementById("btn-catalogo").addEventListener("click", () => {
-        const origen = data.origen;
-        const destino = origen === "index"
-          ? detectarCategoria(prod) + ".html"
-          : origen + ".html";
+        const ori = sel.origen || "index";
+        const destino = ori === "index"
+          ? `${(prod.categoria||"").toLowerCase().replace(/\s+/g,"")}.html`
+          : `${ori}.html`;
         location.href = destino;
       });
-
-      function detectarCategoria(prod) {
-        if (!prod.categoria) return "index";
-        const cat = prod.categoria.toLowerCase().replace(/\s+/g, '');
-        const mapa = {
-          lociones: "lociones",
-          gorras: "gorras",
-          maquillaje: "maquillaje",
-          pijama: "pijama",
-          ropadeportiva: "deportiva"
-        };
-        return mapa[cat] || "index";
-      }
     });
   </script>
 </body>
