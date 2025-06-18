@@ -8,6 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const KEY = "catalogoProductos";
   let productos = [];
 
+  const contIndex = document.getElementById("productos-destacados");
+  const esIndexPage = !!contIndex;
+  const esLocionesPage = !!document.getElementById("filtros-lociones");
+  const esGorrasPage = !!document.getElementById("filtros-gorras");
+  const esMaquillajePage = !!document.getElementById("filtros-maquillaje");
+  const esPijamaPage = !!document.getElementById("filtros-pijama");
+  const esDeportivaPage = !!document.getElementById("filtros-deportiva");
+
+  let filtroGenero = "";
+  let filtroMarcasSet = new Set();
+  let filtroPrecioLoc = "";
+  let filtroDescuentoLoc = false;
+
   fetch("https://admin-backend-ts85.onrender.com/productos")
     .then(res => res.json())
     .then(data => {
@@ -29,24 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const lbl = document.createElement("label");
             lbl.htmlFor = id; lbl.textContent = marca;
             contMar.append(chk, lbl, document.createElement("br"));
-          });
-      }
-
-      if (esDeportivaPage) {
-        const contTal = document.getElementById("filtro-tallas-deportiva");
-        contTal.innerHTML = "";
-        uniqueSorted(productos.filter(p => p.categoria === "Ropa Deportiva").flatMap(p => (p.talla || "").split(",")))
-          .forEach(talla => {
-            const id = "tdep-" + talla.replace(/\s+/g, "");
-            const chk = document.createElement("input");
-            chk.type = "checkbox"; chk.id = id; chk.value = talla;
-            chk.onchange = () => {
-              chk.checked ? filtroTallasDep.add(talla) : filtroTallasDep.delete(talla);
-              renderSection("productos-deportiva", "Ropa Deportiva");
-            };
-            const lbl = document.createElement("label");
-            lbl.htmlFor = id; lbl.textContent = talla;
-            contTal.append(chk, lbl, document.createElement("br"));
           });
       }
     })
@@ -130,38 +125,19 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  const contIndex = document.getElementById("productos-destacados");
-  const esIndexPage = !!contIndex;
-  const esLocionesPage = !!document.getElementById("filtros-lociones");
-  const esGorrasPage = !!document.getElementById("filtros-gorras");
-  const esMaquillajePage = !!document.getElementById("filtros-maquillaje");
-  const esPijamaPage = !!document.getElementById("filtros-pijama");
-  const esDeportivaPage = !!document.getElementById("filtros-deportiva");
-
-  let filtroGenero = "";
-  let filtroMarcasSet = new Set();
-  let filtroPrecioLoc = "";
-  let filtroDescuentoLoc = false;
-  let sortPrecioG = "asc";
-  let onlyDiscG = false;
-  let filterBrandsMQ = new Set();
-  let filterProductsMQ = new Set();
-  let filterPriceOrderMQ = "none";
-  let filterDiscountMQ = false;
-  let filterPackMQ = false;
-  let filtroTallasPj = new Set();
-  let filterPriceOrderPJ = "none";
-  let filterDiscountPJ = false;
-  let filtroGeneroDep = "";
-  let filtroMarcasDep = new Set();
-  let filtroTallasDep = new Set();
-  let filtroPrecioDep = "";
-  let filtroDescuentoDep = false;
-
   function renderSection(sectionId, category) {
     const cont = document.getElementById(sectionId);
     if (!cont) return;
     let lista = productos.filter(p => p.categoria === category);
+
+    if (category === "Lociones") {
+      if (filtroGenero) lista = lista.filter(p => p.genero === filtroGenero);
+      if (filtroDescuentoLoc) lista = lista.filter(p => p.descuento > 0);
+      if (filtroMarcasSet.size) lista = lista.filter(p => p.marcas && p.marcas.some(m => filtroMarcasSet.has(m)));
+      if (filtroPrecioLoc === "asc") lista.sort((a, b) => a.precio - b.precio);
+      if (filtroPrecioLoc === "desc") lista.sort((a, b) => b.precio - a.precio);
+    }
+
     cont.innerHTML = lista.map(p => renderProductCard(p)).join("");
     if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
       window.enableEditDelete();
