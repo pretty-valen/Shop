@@ -205,7 +205,8 @@ let filtroDescuentoDep = false;
   .sort(() => Math.random() - 0.5)
   .slice(0, 20);
 
-    contIndex.innerHTML = mixed.map(p => renderProductCard(p)).join("");
+   const cont = document.getElementById("productos-destacados");
+if (cont) cont.innerHTML = mixed.map(p => renderProductCard(p)).join("");
 
   }
 
@@ -473,28 +474,10 @@ if (esPijamaPage && category==="Pijama") {
   if (filtroPrecioDep==="desc") lista.sort((a,b)=>b.precio-a.precio);
 }
 
-
-      cont.innerHTML = lista.map(p => renderProductCard(p)).join("");
-
 if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
   window.enableEditDelete();
 }
-
-
-
 }).catch(err => {
   console.error("Error cargando productos:", err);
   productos = [];
 });
-
-
-
-
-
-
-
-
-
-
-
-
