@@ -91,23 +91,7 @@ if (esDeportivaPage) {
       const lbl = document.createElement("label");
       lbl.htmlFor=id; lbl.textContent=talla;
       contTal.append(chk,lbl,document.createElement("br"));
-      const contTal = document.getElementById("filtro-tallas-pijama");
-let filtroTallasPj = new Set();
-
-contTal.innerHTML = "";
-uniqueSorted(productos.filter(p=>p.categoria==="Pijama").flatMap(p=>(p.talla || "").split(",")))
-  .forEach(talla => {
-    const id = "tpj-"+talla.replace(/\s+/g,"");
-    const chk = document.createElement("input");
-    chk.type="checkbox"; chk.id=id; chk.value=talla;
-    chk.onchange = () => {
-      chk.checked ? filtroTallasPj.add(talla) : filtroTallasPj.delete(talla);
-      renderSection("productos-pijama","Pijama");
-    };
-    const lbl = document.createElement("label");
-    lbl.htmlFor=id; lbl.textContent=talla;
-    contTal.append(chk,lbl,document.createElement("br"));
-  });
+     
 
     });
     
@@ -345,6 +329,23 @@ let filtroDescuentoDep = false;
       const lbl = document.createElement("label");
       lbl.htmlFor = id; lbl.textContent = talla;
       contTal.append(chk, lbl, document.createElement("br"));
+       const contTal = document.getElementById("filtro-tallas-pijama");
+let filtroTallasPj = new Set();
+
+contTal.innerHTML = "";
+uniqueSorted(productos.filter(p=>p.categoria==="Pijama").flatMap(p=>(p.talla || "").split(",")))
+  .forEach(talla => {
+    const id = "tpj-"+talla.replace(/\s+/g,"");
+    const chk = document.createElement("input");
+    chk.type="checkbox"; chk.id=id; chk.value=talla;
+    chk.onchange = () => {
+      chk.checked ? filtroTallasPj.add(talla) : filtroTallasPj.delete(talla);
+      renderSection("productos-pijama","Pijama");
+    };
+    const lbl = document.createElement("label");
+    lbl.htmlFor=id; lbl.textContent=talla;
+    contTal.append(chk,lbl,document.createElement("br"));
+  });
     });
 }
 
@@ -472,15 +473,15 @@ if (esPijamaPage && category==="Pijama") {
 }
 
 
-    cont.innerHTML = lista.map(p => renderProductCard(p)).join("");
+      cont.innerHTML = lista.map(p => renderProductCard(p)).join("");
 
     if (localStorage.getItem("isAdmin")==="true" && window.enableEditDelete) {
       window.enableEditDelete();
     }
-  }
+  
+}) // ← CIERRE DEL THEN PRINCIPAL
+.catch(err => console.error("Error cargando productos:", err));
 
-
-);
 
 
 
