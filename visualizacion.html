@@ -10,172 +10,116 @@
       background-color: #ffe6f0;
       font-family: 'Segoe UI', sans-serif;
       color: #001f3f;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
     }
     .contenedor-producto {
-      max-width: 1000px;
-      margin: 50px auto;
-      background: white;
-      border-radius: 12px;
+      max-width: 1000px; margin: 50px auto;
+      background: white; border-radius: 12px;
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
-      display: flex;
-      flex-wrap: wrap;
-      transition: all 0.3s ease;
+      display: flex; flex-wrap: wrap;
     }
-    .imagen {
-      flex: 1 1 50%;
-      background: linear-gradient(to bottom right, #f9f9f9, #eaeaea);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .imagen img {
-      max-width: 100%;
-      border-radius: 10px;
-      transition: transform 0.3s ease;
-    }
-    .imagen img:hover {
-      transform: scale(1.03);
-    }
-    .info {
-      flex: 1 1 50%;
-      padding: 40px 30px;
-      background: #ffffff;
-    }
-    .info h2 {
-      font-size: 28px;
-      color: #001f3f;
-      margin-bottom: 10px;
-    }
-    .info p {
-      font-size: 16px;
-      margin: 8px 0;
-    }
-    .info p strong {
-      color: #001f3f;
-    }
-    #selector-talla {
-      margin-top: 8px;
-      padding: 10px;
-      width: 100%;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      outline-color: #001f3f;
-      margin-bottom: 20px;
-    }
-    .botones-fijos {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 30px 10px 60px 10px;
-      background: transparent;
-    }
+    .imagen, .info { flex: 1 1 50%; }
+    .imagen { background: linear-gradient(to bottom right, #f9f9f9, #eaeaea); padding: 20px; display: flex; align-items: center; justify-content: center; }
+    .imagen img { max-width: 100%; border-radius: 10px; transition: transform 0.3s ease; }
+    .imagen img:hover { transform: scale(1.03); }
+    .info { padding: 40px 30px; }
+    .info h2 { font-size: 28px; margin-bottom: 10px; }
+    .info p { font-size: 16px; margin: 8px 0; }
+    #selector-talla { margin: 8px 0 20px; padding: 10px; width:100%; font-size:16px; border-radius:6px; border:1px solid #ccc; }
+    .botones-fijos { display:flex; justify-content:center; gap:20px; padding:30px 10px 60px; }
     .botones-fijos button {
-      background: #001f3f;
-      color: white;
-      padding: 14px 24px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: all 0.2s ease-in-out;
+      background:#001f3f; color:white; padding:14px 24px;
+      border:none; border-radius:8px; cursor:pointer; transition:0.2s;
     }
-    .botones-fijos button:hover {
-      background: #003366;
-      transform: translateY(-2px);
-    }
+    .botones-fijos button:hover { background:#003366; transform:translateY(-2px); }
   </style>
 </head>
 <body>
   <div class="contenedor-producto">
-    <div class="imagen" id="imagen-prod"></div>
-    <div class="info" id="detalle-producto"></div>
+    <div class="imagen"  id="imagen-prod"></div>
+    <div class="info"     id="detalle-producto"></div>
   </div>
-
   <div class="botones-fijos">
-    <button type="button" onclick="location.href='index.html'">Inicio</button>
-    <button type="button" id="btn-catalogo">Regresar al catálogo</button>
-    <button type="button" id="btn-agregar">Agregar al carrito</button>
-    <button type="button" onclick="location.href='carrito.html'">Carrito</button>
+    <button onclick="location.href='index.html'">Inicio</button>
+    <button id="btn-catalogo">Regresar al catálogo</button>
+    <button id="btn-agregar">Agregar al carrito</button>
+    <button onclick="location.href='carrito.html'">Carrito</button>
   </div>
 
   <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const sel = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
-  const contInfo = document.getElementById("detalle-producto");
-  const contImg  = document.getElementById("imagen-prod");
+  document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(location.search);
+    const id     = params.get("id");
+    const origen = params.get("origen") || "index";
 
-  if (!sel.id) {
-    contInfo.innerText = "Producto no encontrado.";
-    return;
-  }
+    const imgCont  = document.getElementById("imagen-prod");
+    const infoCont = document.getElementById("detalle-producto");
+    const btnCat   = document.getElementById("btn-catalogo");
 
-  fetch(`https://admin-backend-ts85.onrender.com/productos/${sel.id}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Producto inexistente");
-      return res.json();
-    })
-    .then(prod => {
-      // Construye el HTML del detalle:
-      const hasDesc = prod.descuento > 0;
-      const precioFinal = hasDesc
-        ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
-        : prod.precio.toFixed(2);
-
-      let html = `
-        <h2>${prod.nombre}</h2>
-        ${hasDesc
-          ? `<p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
-             <p><strong>Precio ahora:</strong> $${precioFinal}</p>
-             <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>`
-          : `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`}
-        ${prod.marca     ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : ""}
-        ${prod.producto  ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : ""}
-        ${prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : ""}
-        ${prod.descripcion 
-          ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
-          : ""}
-      `;
-
-      // Si trae tallas, pinto selector:
-      const tallas = prod.talla ? prod.talla.split(",").map(t=>t.trim()) : [];
-      if (tallas.length) {
-        html += `
-          <p><strong>Talla:</strong></p>
-          <select id="selector-talla">
-            <option value="">Seleccione una talla</option>
-            ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
-          </select>
-        `;
-      }
-
-      // Inserto imagen y texto:
-      contImg.innerHTML  = `<img src="${prod.fotos[0]||''}" alt="${prod.nombre}">`;
-      contInfo.innerHTML = html;
-
-      // Botón "Agregar al carrito" (si ya lo tenías):
-      document.getElementById("btn-agregar").onclick = () => {
-        const carrito = JSON.parse(localStorage.getItem("carrito")||"[]");
-        const selT = document.getElementById("selector-talla");
-        const talla = selT ? selT.value : "";
-        if (selT && !talla) { alert("Selecciona una talla"); return; }
-        const item = { ...prod, tallaSeleccionada: talla };
-        carrito.push(item);
-        localStorage.setItem("carrito", JSON.stringify(carrito));
-        alert("Producto agregado al carrito");
-      };
-    })
-    .catch(err => {
-      console.error(err);
-      contInfo.innerText = "Producto no encontrado.";
+    btnCat.addEventListener("click", () => {
+      const dest = origen === "index" ? "index.html" : origen + ".html";
+      location.href = dest;
     });
-});
-</script>
 
+    if (!id) {
+      infoCont.innerText = "Producto no encontrado.";
+      return;
+    }
+
+    fetch(`https://admin-backend-ts85.onrender.com/productos/${id}`)
+      .then(res => {
+        if (!res.ok) throw new Error("no existe");
+        return res.json();
+      })
+      .then(prod => {
+        const hasDesc = prod.descuento > 0;
+        const precioF = hasDesc
+          ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
+          : prod.precio.toFixed(2);
+
+        let html = `<h2>${prod.nombre}</h2>`;
+        if (hasDesc) {
+          html += `
+            <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+            <p><strong>Precio ahora:</strong> $${precioF}</p>
+            <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
+          `;
+        } else {
+          html += `<p><strong>Precio:</strong> $${precioF}</p>`;
+        }
+        if (prod.marcas?.length)    html += `<p><strong>Marca(s):</strong> ${prod.marcas.join(", ")}</p>`;
+        if (prod.productos?.length) html += `<p><strong>Tipo:</strong> ${prod.productos.join(", ")}</p>`;
+        if (prod.categoria)         html += `<p><strong>Categoría:</strong> ${prod.categoria}</p>`;
+        if (prod.descripcion)       html += `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`;
+
+        const tallas = prod.talla?.split(",").map(t=>t.trim()).filter(Boolean)||[];
+        if (tallas.length) {
+          html += `
+            <p><strong>Talla:</strong></p>
+            <select id="selector-talla">
+              <option value="">Seleccione...</option>
+              ${tallas.map(t=>`<option value="${t}">${t}</option>`).join("")}
+            </select>
+          `;
+        }
+
+        imgCont.innerHTML  = `<img src="${prod.fotos[0]||""}" alt="${prod.nombre}">`;
+        infoCont.innerHTML = html;
+
+        document.getElementById("btn-agregar").onclick = () => {
+          const carro = JSON.parse(localStorage.getItem("carrito")||"[]");
+          const selT = document.getElementById("selector-talla");
+          const talla = selT ? selT.value : "";
+          if (selT && !talla) { alert("Selecciona una talla"); return; }
+          carro.push({ ...prod, tallaSeleccionada: talla });
+          localStorage.setItem("carrito", JSON.stringify(carro));
+          alert("Producto agregado al carrito");
+        };
+      })
+      .catch(_=> {
+        infoCont.innerText = "Producto no encontrado.";
+      });
+  });
+  </script>
 </body>
 </html>
