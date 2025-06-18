@@ -101,79 +101,90 @@
     <button onclick="location.href='carrito.html'">Carrito</button>
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const KEY = "catalogoProductos";
-      const CART = "carrito";
-      const sel = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
-      const productos = JSON.parse(localStorage.getItem(KEY) || "[]");
-      const prod = productos.find(p => String(p.id) === String(sel.id));
-
-      if (!prod) {
-        document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
-        return;
-      }
-
-      document.getElementById("imagen-prod").innerHTML =
-        `<img src="${prod.fotos[0]}" alt="${prod.nombre}" />`;
-
-      const hasDesc = prod.descuento > 0;
-      const precioFinal = hasDesc
-        ? (prod.precio * (1 - prod.descuento / 100)).toFixed(2)
-        : prod.precio.toFixed(2);
-      const tallas = prod.talla
-        ? prod.talla.split(",").map(t => t.trim())
-        : [];
-
-      let html = `<h2>${prod.nombre}</h2>`;
-      if (hasDesc) {
-        html += `
-          <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
-          <p><strong>Precio ahora:</strong> $${precioFinal}</p>
-          <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
-        `;
-      } else {
-        html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
-      }
-      html += prod.marca ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
-      html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
-      html += prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
-      html += prod.descripcion ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>` : "";
-
-      if (tallas.length) {
-        html += `
-          <p><strong>Talla:</strong></p>
-          <select id="selector-talla">
-            <option value="">Seleccione una talla</option>
-            ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
-          </select>
-        `;
-      }
-
-      document.getElementById("detalle-producto").innerHTML = html;
-
-      document.getElementById("btn-agregar").addEventListener("click", () => {
-        const carrito = JSON.parse(localStorage.getItem(CART) || "[]");
-        const select = document.getElementById("selector-talla");
-        const talla = select ? select.value : "";
-        if (select && !talla) {
-          alert("Selecciona una talla");
+ <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sel = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
+    if (!sel.id) {
+      document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+      return;
+    }
+    fetch("https://admin-backend-ts85.onrender.com/productos")
+      .then(res => res.json())
+      .then(productos => {
+        const prod = productos.find(p => String(p.id) === String(sel.id));
+        if (!prod) {
+          document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
           return;
         }
-        const item = { ...prod, ...(talla && { tallaSeleccionada: talla }) };
-        carrito.push(item);
-        localStorage.setItem(CART, JSON.stringify(carrito));
-        alert("Producto agregado al carrito");
-      });
+        // render imagen
+        document.getElementById("imagen-prod").innerHTML =
+          `<img src="${prod.fotos[0]}" alt="${prod.nombre}">`;
+        // detalles
+        const hasDesc = prod.descuento > 0;
+        const precioFinal = hasDesc
+          ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
+          : prod.precio.toFixed(2);
+        const tallas = prod.talla
+          ? prod.talla.split(",").map(t => t.trim())
+          : [];
+        let html = `<h2>${prod.nombre}</h2>`;
+        if (hasDesc) {
+          html += `
+            <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+            <p><strong>Precio ahora:</strong> $${precioFinal}</p>
+            <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
+          `;
+        } else {
+          html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
+        }
+        html += prod.marca    ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
+        html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
+        html += prod.categoria? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
+        html += prod.descripcion
+                ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
+                : "";
+        if (tallas.length) {
+          html += `
+            <p><strong>Talla:</strong></p>
+            <select id="selector-talla">
+              <option value="">Seleccione una talla</option>
+              ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
+            </select>
+          `;
+        }
+        document.getElementById("detalle-producto").innerHTML = html;
 
-      document.getElementById("btn-catalogo").addEventListener("click", () => {
-        const ori = sel.origen || "index";
-        const destino = ori === "index"
-          ? `${(prod.categoria||"").toLowerCase().replace(/\s+/g,"")}.html`
-          : `${ori}.html`;
-        location.href = destino;
+        // botón agregar
+        document.getElementById("btn-agregar").onclick = () => {
+          const carritoKey = "carrito";
+          const carrito = JSON.parse(localStorage.getItem(carritoKey) || "[]");
+          const select = document.getElementById("selector-talla");
+          if (select && !select.value) {
+            alert("Selecciona una talla");
+            return;
+          }
+          const item = { ...prod };
+          if (select) item.tallaSeleccionada = select.value;
+          carrito.push(item);
+          localStorage.setItem(carritoKey, JSON.stringify(carrito));
+          alert("Producto agregado al carrito");
+        };
+
+        // botón catálogo
+        document.getElementById("btn-catalogo").onclick = () => {
+          const ori = sel.origen || "index";
+          const cat = prod.categoria
+            ? prod.categoria.toLowerCase().replace(/\s+/g, "")
+            : "index";
+          const destino = ori === "index" ? `${cat}.html` : `${ori}.html`;
+          location.href = destino;
+        };
+      })
+      .catch(() => {
+        document.getElementById("detalle-producto").innerText = "Error cargando el producto.";
       });
-    });
-  </script>
+  });
+</script>
+
 </body>
 </html>
