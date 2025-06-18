@@ -442,8 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 });
   // Al final de productos.js
-  window.verDetalleProducto = (id, categoria) => {
-  window.location.href = `visualizacion.html?id=${id}&categoria=${categoria}`
+  window.verDetalleProducto = id => {
     const origen = location.pathname.split("/").pop().replace(".html","") || "index";
     localStorage.setItem("productoSeleccionado",
       JSON.stringify({ id, origen })
