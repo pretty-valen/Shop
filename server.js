@@ -1,56 +1,61 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+// server.js
+const express   = require('express');
+const cors      = require('cors');
+const mongoose  = require('mongoose');
 require('dotenv').config();
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// CORS solo para GitHub Pages
-app.use(cors({
-  origin: "https://pretty-valen.github.io"
-}));
+// ——— 1) CORS ———
+// Permitimos llamadas desde cualquier origen.
+// Si quieres restringirlo solo a tu GH Pages, reemplaza `app.use(cors())` por:
+//   app.use(cors({ origin: 'https://pretty-valen.github.io' }));
+app.use(cors());
 
-// Middleware de carga
-app.use(express.json({ limit: '100mb' }));
+// ——— 2) Body parsing ———
+app.use(express.json({    limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
-// Conexión a MongoDB Atlas
+// ——— 3) Conexión a MongoDB Atlas ———
 mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
+  useNewUrlParser:  true,
   useUnifiedTopology: true,
   ssl: true
 });
 
-// Modelo
+// ——— 4) Modelo ———
 const productoSchema = new mongoose.Schema({
-  nombre: String,
-  categoria: String,
-  precio: Number,
+  nombre:      String,
+  categoria:   String,
+  precio:      Number,
   descripcion: String,
-  descuento: Number,
-  fotos: [String],
-  marcas: [String],
-  productos: [String],
-  isPack: Boolean,
-  talla: String,
-  genero: String
+  descuento:   Number,
+  fotos:       [String],
+  marcas:      [String],
+  productos:   [String],
+  isPack:      Boolean,
+  talla:       String,
+  genero:      String
 });
-const Producto = mongoose.model("Producto", productoSchema);
+const Producto = mongoose.model('Producto', productoSchema);
 
-// Rutas
+// ——— 5) RUTAS ———
+
+// login
 app.post('/login', (req, res) => {
   const { usuario, clave } = req.body;
   if (
     usuario === process.env.ADMIN_USER &&
-    clave === process.env.ADMIN_PASS
+    clave   === process.env.ADMIN_PASS
   ) {
-    return res.status(200).json({ success: true, token: "admin_token" });
+    return res.status(200).json({ success: true, token: 'admin_token' });
   }
-  res.status(401).json({ success: false, message: "Credenciales incorrectas" });
+  res.status(401).json({ success: false, message: 'Credenciales incorrectas' });
 });
 
-app.post("/productos", async (req, res) => {
+// crear producto
+app.post('/productos', async (req, res) => {
   try {
     const nuevo = new Producto(req.body);
     await nuevo.save();
@@ -60,21 +65,40 @@ app.post("/productos", async (req, res) => {
   }
 });
 
-app.get("/productos", async (req, res) => {
-  const lista = await Producto.find();
-  res.json(lista);
+// listar todos
+app.get('/productos', async (req, res) => {
+  try {
+    const lista = await Producto.find();
+    res.json(lista);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
-app.delete("/productos/:id", async (req, res) => {
+// ——— **nueva ruta** GET por ID ———
+app.get('/productos/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    await Producto.findByIdAndDelete(id);
+    const prod = await Producto.findById(req.params.id);
+    if (!prod) {
+      return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+    }
+    res.json(prod);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// borrar por ID
+app.delete('/productos/:id', async (req, res) => {
+  try {
+    await Producto.findByIdAndDelete(req.params.id);
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
+// arrancar servidor
 app.listen(PORT, () => {
-  console.log(`Servidor autenticación corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor de productos corriendo en http://localhost:${PORT}`);
 });
