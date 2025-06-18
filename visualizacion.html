@@ -105,29 +105,27 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const KEY = "catalogoProductos";
-      const carritoKEY = "carrito";
-      const data = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
-      const productos = JSON.parse(localStorage.getItem(KEY) || "[]");
-      const prod = productos.find(p => p.id == data.id);
+document.addEventListener("DOMContentLoaded", () => {
+  const sel = JSON.parse(localStorage.getItem("productoSeleccionado") || "{}");
+  const contInfo = document.getElementById("detalle-producto");
+  const contImg  = document.getElementById("imagen-prod");
 
-      if (!prod) {
-        document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
-        return;
-      }
+  if (!sel.id) {
+    contInfo.innerText = "Producto no encontrado.";
+    return;
+  }
 
-      document.getElementById("imagen-prod").innerHTML = `
-        <img src="${prod.fotos[0]}" alt="${prod.nombre}" />
-      `;
-
-      const hasDesc = prod.descuento && prod.descuento > 0;
+  fetch(`https://admin-backend-ts85.onrender.com/productos/${sel.id}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Producto inexistente");
+      return res.json();
+    })
+    .then(prod => {
+      // Construye el HTML del detalle:
+      const hasDesc = prod.descuento > 0;
       const precioFinal = hasDesc
-        ? (prod.precio * (1 - prod.descuento / 100)).toFixed(2)
+        ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
         : prod.precio.toFixed(2);
-      const tallasDisponibles = prod.talla
-        ? prod.talla.split(",").map(t => t.trim())
-        : [];
 
       let html = `
         <h2>${prod.nombre}</h2>
@@ -136,63 +134,48 @@
              <p><strong>Precio ahora:</strong> $${precioFinal}</p>
              <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>`
           : `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`}
-        ${prod.marca ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : ''}
-        ${prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : ''}
-        ${prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : ''}
-        ${prod.descripcion ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>` : ''}
+        ${prod.marca     ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : ""}
+        ${prod.producto  ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : ""}
+        ${prod.categoria ? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : ""}
+        ${prod.descripcion 
+          ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
+          : ""}
       `;
 
-      if (tallasDisponibles.length) {
+      // Si trae tallas, pinto selector:
+      const tallas = prod.talla ? prod.talla.split(",").map(t=>t.trim()) : [];
+      if (tallas.length) {
         html += `
           <p><strong>Talla:</strong></p>
           <select id="selector-talla">
             <option value="">Seleccione una talla</option>
-            ${tallasDisponibles.map(t => `<option value="${t}">${t}</option>`).join("")}
+            ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
           </select>
         `;
       }
 
-      document.getElementById("detalle-producto").innerHTML = html;
+      // Inserto imagen y texto:
+      contImg.innerHTML  = `<img src="${prod.fotos[0]||''}" alt="${prod.nombre}">`;
+      contInfo.innerHTML = html;
 
-      document.getElementById("btn-agregar").addEventListener("click", () => {
-        const carrito = JSON.parse(localStorage.getItem(carritoKEY) || "[]");
-        const select = document.getElementById("selector-talla");
-        const talla = select ? select.value : "";
-
-        if (select && !talla) {
-          alert("Selecciona una talla");
-          return;
-        }
-
-        const item = { ...prod };
-        if (talla) item.tallaSeleccionada = talla;
-
+      // Botón "Agregar al carrito" (si ya lo tenías):
+      document.getElementById("btn-agregar").onclick = () => {
+        const carrito = JSON.parse(localStorage.getItem("carrito")||"[]");
+        const selT = document.getElementById("selector-talla");
+        const talla = selT ? selT.value : "";
+        if (selT && !talla) { alert("Selecciona una talla"); return; }
+        const item = { ...prod, tallaSeleccionada: talla };
         carrito.push(item);
-        localStorage.setItem(carritoKEY, JSON.stringify(carrito));
+        localStorage.setItem("carrito", JSON.stringify(carrito));
         alert("Producto agregado al carrito");
-      });
-
-      document.getElementById("btn-catalogo").addEventListener("click", () => {
-        const origen = data.origen;
-        const destino = origen === "index"
-          ? detectarCategoria(prod) + ".html"
-          : origen + ".html";
-        location.href = destino;
-      });
-
-      function detectarCategoria(prod) {
-        if (!prod.categoria) return "index";
-        const cat = prod.categoria.toLowerCase().replace(/\s+/g, '');
-        const mapa = {
-          lociones: "lociones",
-          gorras: "gorras",
-          maquillaje: "maquillaje",
-          pijama: "pijama",
-          ropadeportiva: "deportiva"
-        };
-        return mapa[cat] || "index";
-      }
+      };
+    })
+    .catch(err => {
+      console.error(err);
+      contInfo.innerText = "Producto no encontrado.";
     });
-  </script>
+});
+</script>
+
 </body>
 </html>
