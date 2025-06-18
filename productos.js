@@ -113,7 +113,7 @@ if (esDeportivaPage) {
   }
 }
 
-    iniciarRenderizado();
+    
     document.getElementById("contenedor-productos")?.addEventListener("click", e => {
   const btn = e.target.closest(".eliminar-btn");
   const card = e.target.closest(".producto-card");
@@ -475,12 +475,15 @@ if (esPijamaPage && category==="Pijama") {
 
       cont.innerHTML = lista.map(p => renderProductCard(p)).join("");
 
-    if (localStorage.getItem("isAdmin")==="true" && window.enableEditDelete) {
-      window.enableEditDelete();
-    }
-  
-}) // ← CIERRE DEL THEN PRINCIPAL
+if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
+  window.enableEditDelete();
+}
+
+iniciarRenderizado(); // ← debe estar AQUÍ, justo antes del cierre del .then
+
+}) // ← aquí se cierra el .then
 .catch(err => console.error("Error cargando productos:", err));
+
 
 
 
