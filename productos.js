@@ -13,6 +13,7 @@ fetch("https://admin-backend-ts85.onrender.com/productos")
   .then(res => res.json())
   .then(data => {
     productos = data;
+    iniciarRenderizado(); // ← debe estar AQUÍ, justo antes del cierre del .then
     
     if (esMaquillajePage) {
   const cbBrand = document.getElementById("filter-brand-container");
@@ -479,7 +480,7 @@ if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
   window.enableEditDelete();
 }
 
-iniciarRenderizado(); // ← debe estar AQUÍ, justo antes del cierre del .then
+
 
 }) // ← aquí se cierra el .then
 .catch(err => console.error("Error cargando productos:", err));
