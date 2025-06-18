@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
     .then(data => {
       productos = data;
+      localStorage.setItem("catalogoProductos", JSON.stringify(data));
       montarFiltros();
       iniciarRenderizado();
     })
