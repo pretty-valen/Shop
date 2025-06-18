@@ -434,16 +434,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Detalle de producto
-  window.verDetalleProducto = (id, categoria) => {
-  window.location.href = `visualizacion.html?id=${id}&categoria=${categoria}`
+  window.verDetalleProducto = id => {
     const origen = location.pathname.split("/").pop().replace(".html","") || "index";
     localStorage.setItem("productoSeleccionado", JSON.stringify({ id, origen }));
     location.href = "visualizacion.html";
   };
 });
   // Al final de productos.js
-  window.verDetalleProducto = id => {
-    const origen = location.pathname.split("/").pop().replace(".html","") || "index";
+  window.verDetalleProducto = (id, categoria) => {
+  window.location.href = `visualizacion.html?id=${id}&categoria=${categoria}`;
     localStorage.setItem("productoSeleccionado",
       JSON.stringify({ id, origen })
     );
