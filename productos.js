@@ -21,29 +21,79 @@ document.addEventListener("DOMContentLoaded", () => {
   let filtroPrecioLoc = "";
   let filtroDescuentoLoc = false;
 
+  let filtroMarcasGorras = new Set();
+  let filtroMarcasMQ = new Set();
+  let filtroProductosMQ = new Set();
+  let filtroTallasPijama = new Set();
+  let filtroMarcasDep = new Set();
+  let filtroTallasDep = new Set();
+
   fetch("https://admin-backend-ts85.onrender.com/productos")
     .then(res => res.json())
     .then(data => {
       productos = data;
       iniciarRenderizado();
 
-      if (esLocionesPage) {
-        const contMar = document.getElementById("filtro-marcas");
-        contMar.innerHTML = "";
-        uniqueSorted(productos.filter(p => p.categoria === "Lociones").flatMap(p => p.marcas || []))
-          .forEach(marca => {
-            const id = "m-" + marca.replace(/\s+/g, "");
-            const chk = document.createElement("input");
-            chk.type = "checkbox"; chk.id = id; chk.value = marca;
-            chk.onchange = () => {
-              chk.checked ? filtroMarcasSet.add(marca) : filtroMarcasSet.delete(marca);
-              renderSection("productos-lociones", "Lociones");
-            };
-            const lbl = document.createElement("label");
-            lbl.htmlFor = id; lbl.textContent = marca;
-            contMar.append(chk, lbl, document.createElement("br"));
-          });
-      }
+      const mapFilters = [
+        {
+          cond: esLocionesPage,
+          cat: "Lociones",
+          container: "filtro-marcas",
+          targetSet: filtroMarcasSet,
+          renderId: "productos-lociones"
+        },
+        {
+          cond: esGorrasPage,
+          cat: "Gorras",
+          container: "filtro-marcas-gorras",
+          targetSet: filtroMarcasGorras,
+          renderId: "productos-gorras"
+        },
+        {
+          cond: esMaquillajePage,
+          cat: "Maquillaje",
+          container: "filtro-marcas-maquillaje",
+          targetSet: filtroMarcasMQ,
+          renderId: "productos-maquillaje"
+        },
+        {
+          cond: esPijamaPage,
+          cat: "Pijama",
+          container: "filtro-tallas-pijama",
+          targetSet: filtroTallasPijama,
+          renderId: "productos-pijama",
+          split: true
+        },
+        {
+          cond: esDeportivaPage,
+          cat: "Ropa Deportiva",
+          container: "filtro-marcas-deportiva",
+          targetSet: filtroMarcasDep,
+          renderId: "productos-deportiva"
+        }
+      ];
+
+      mapFilters.forEach(({ cond, cat, container, targetSet, renderId, split }) => {
+        if (!cond) return;
+        const cont = document.getElementById(container);
+        if (!cont) return;
+        cont.innerHTML = "";
+        uniqueSorted(productos.filter(p => p.categoria === cat).flatMap(p => {
+          const val = container.includes("tallas") ? p.talla : p.marcas;
+          return split ? (val || "").split(",") : (val || []);
+        })).forEach(valor => {
+          const id = `${container}-${valor.replace(/\s+/g, '')}`;
+          const chk = document.createElement("input");
+          chk.type = "checkbox"; chk.id = id; chk.value = valor;
+          chk.onchange = () => {
+            chk.checked ? targetSet.add(valor) : targetSet.delete(valor);
+            renderSection(renderId, cat);
+          };
+          const lbl = document.createElement("label");
+          lbl.htmlFor = id; lbl.textContent = valor;
+          cont.append(chk, lbl, document.createElement("br"));
+        });
+      });
     })
     .catch(err => {
       console.error("Error cargando productos:", err);
@@ -130,13 +180,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!cont) return;
     let lista = productos.filter(p => p.categoria === category);
 
-    if (category === "Lociones") {
-      if (filtroGenero) lista = lista.filter(p => p.genero === filtroGenero);
-      if (filtroDescuentoLoc) lista = lista.filter(p => p.descuento > 0);
-      if (filtroMarcasSet.size) lista = lista.filter(p => p.marcas && p.marcas.some(m => filtroMarcasSet.has(m)));
-      if (filtroPrecioLoc === "asc") lista.sort((a, b) => a.precio - b.precio);
-      if (filtroPrecioLoc === "desc") lista.sort((a, b) => b.precio - a.precio);
-    }
+    if (category === "Lociones" && filtroMarcasSet.size)
+      lista = lista.filter(p => p.marcas && p.marcas.some(m => filtroMarcasSet.has(m)));
+    if (category === "Gorras" && filtroMarcasGorras.size)
+      lista = lista.filter(p => p.marcas && p.marcas.some(m => filtroMarcasGorras.has(m)));
+    if (category === "Maquillaje" && filtroMarcasMQ.size)
+      lista = lista.filter(p => p.marcas && p.marcas.some(m => filtroMarcasMQ.has(m)));
+    if (category === "Pijama" && filtroTallasPijama.size)
+      lista = lista.filter(p => p.talla && p.talla.split(',').some(t => filtroTallasPijama.has(t.trim())));
+    if (category === "Ropa Deportiva" && filtroMarcasDep.size)
+      lista = lista.filter(p => p.marcas && p.marcas.some(m => filtroMarcasDep.has(m)));
 
     cont.innerHTML = lista.map(p => renderProductCard(p)).join("");
     if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
