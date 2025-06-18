@@ -11,31 +11,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const esDeportivaPage  = !!document.getElementById("filtros-deportiva");
 
   // Variables de filtro
-  // Lociones
-  let filtroGeneroLoc     = "";
-  let filtroMarcasLoc     = new Set();
-  let filtroOrdenPrecioLoc= "";
-  let filtroDescuentoLoc  = false;
-  // Gorras
+  let filtroGeneroLoc    = "";
+  let filtroMarcasLoc    = new Set();
+  let filtroOrdenPrecioLoc = "";
+  let filtroDescuentoLoc   = false;
+
   let filtroOrdenPrecioG  = "";
   let filtroDescuentoG    = false;
-  // Maquillaje
+
   let filtroMarcasMQ      = new Set();
   let filtroProductosMQ   = new Set();
   let filtroOrdenPrecioMQ = "";
   let filtroDescuentoMQ   = false;
   let filtroPackMQ        = false;
-  // Pijama
+
   let filtroOrdenPrecioPJ = "";
   let filtroDescuentoPJ   = false;
   let filtroTallasPJ      = new Set();
   let filtroGeneroPJ      = "";
-  // Deportiva
+
   let filtroGeneroDep     = "";
   let filtroMarcasDep     = new Set();
   let filtroTallasDep     = new Set();
-  let filtroOrdenPrecioDep= "";
-  let filtroDescuentoDep  = false;
+  let filtroOrdenPrecioDep = "";
+  let filtroDescuentoDep   = false;
 
   // Cargar productos desde el backend
   fetch("https://admin-backend-ts85.onrender.com/productos")
@@ -50,9 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
       productos = [];
     });
 
-  // Genera dinámicamente los controles de filtro de cada página
   function montarFiltros() {
-    // === LOCIONES ===
     if (esLocionesPage) {
       document.getElementById("filtro-genero").addEventListener("change", e => {
         filtroGeneroLoc = e.target.value;
@@ -96,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // === GORRAS ===
     if (esGorrasPage) {
       document.getElementById("sort-precio-gorras").addEventListener("change", e => {
         filtroOrdenPrecioG = e.target.value;
@@ -108,13 +104,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // === MAQUILLAJE ===
     if (esMaquillajePage) {
       const marcasMQ = uniqueSorted(
         productos.filter(p => p.categoria === "Maquillaje").flatMap(p => p.marcas || [])
       );
       const contMM = document.getElementById("filter-brand-container");
-      contMM.innerHTML = "";
       marcasMQ.forEach(marca => {
         const id = "mq-" + marca.replace(/\s+/g, "");
         const cb = document.createElement("input");
@@ -131,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
         productos.filter(p => p.categoria === "Maquillaje").flatMap(p => p.productos || [])
       );
       const contPM = document.getElementById("filter-product-container");
-      contPM.innerHTML = "";
       tiposMQ.forEach(prod => {
         const id = "pr-" + prod.replace(/\s+/g, "");
         const cb = document.createElement("input");
@@ -159,24 +152,22 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("clear-filters").addEventListener("click", () => {
         filtroMarcasMQ.clear();
         filtroProductosMQ.clear();
-        filtroOrdenPrecioMQ = "";
+        filtroOrdenPrecioMQ = "none";
         filtroDescuentoMQ = false;
         filtroPackMQ = false;
         document.querySelectorAll("#filter-brand-container input, #filter-product-container input").forEach(cb => cb.checked = false);
-        document.getElementById("filter-price-order").value = "";
+        document.getElementById("filter-price-order").value = "none";
         document.getElementById("filter-discount").checked = false;
         document.getElementById("filter-pack").checked = false;
         renderSection("productos-maquillaje", "Maquillaje");
       });
     }
 
-    // === PIJAMA ===
     if (esPijamaPage) {
       const tallasPJ = uniqueSorted(
-        productos.filter(p => p.categoria === "Pijama").flatMap(p => (p.talla || "").split(","))
+        productos.filter(p => p.categoria === "Pijama").flatMap(p => (p.talla||"").split(","))
       );
       const contTP = document.getElementById("tallas-lista");
-      contTP.innerHTML = "";
       tallasPJ.forEach(t => {
         const talla = t.trim();
         if (!talla) return;
@@ -204,11 +195,11 @@ document.addEventListener("DOMContentLoaded", () => {
         renderSection("productos-pijama", "Pijama");
       });
       document.getElementById("clear-filters-pijama").addEventListener("click", () => {
-        filtroOrdenPrecioPJ = "";
+        filtroOrdenPrecioPJ = "none";
         filtroDescuentoPJ = false;
         filtroTallasPJ.clear();
         filtroGeneroPJ = "";
-        document.getElementById("filter-price-pijama").value = "";
+        document.getElementById("filter-price-pijama").value = "none";
         document.getElementById("filter-discount-pijama").checked = false;
         document.getElementById("filtro-genero-pijama").value = "";
         document.querySelectorAll("#tallas-lista input").forEach(cb => cb.checked = false);
@@ -216,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // === ROPA DEPORTIVA ===
     if (esDeportivaPage) {
       document.getElementById("filtro-genero-deportiva").addEventListener("change", e => {
         filtroGeneroDep = e.target.value;
@@ -226,7 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
         productos.filter(p => p.categoria === "Ropa Deportiva").flatMap(p => p.marcas || [])
       );
       const contMD = document.getElementById("filtro-marcas-deportiva");
-      contMD.innerHTML = "";
       marcasDep.forEach(m => {
         const id = "dep-" + m.replace(/\s+/g, "");
         const cb = document.createElement("input");
@@ -240,10 +229,9 @@ document.addEventListener("DOMContentLoaded", () => {
         contMD.append(cb, lbl, document.createElement("br"));
       });
       const tallasDepList = uniqueSorted(
-        productos.filter(p => p.categoria === "Ropa Deportiva").flatMap(p => (p.talla || "").split(","))
+        productos.filter(p => p.categoria === "Ropa Deportiva").flatMap(p => (p.talla||"").split(","))
       );
       const contTD = document.getElementById("filtro-tallas-deportiva");
-      contTD.innerHTML = "";
       tallasDepList.forEach(t => {
         const talla = t.trim();
         if (!talla) return;
@@ -281,7 +269,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Inicialización de la vista
   function iniciarRenderizado() {
     if (esIndexPage) {
       renderMixed();
@@ -299,7 +286,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Render aleatorio para la home
   function renderMixed() {
     const mixed = productos
       .filter(p => ["Lociones","Gorras","Maquillaje","Pijama","Ropa Deportiva"].includes(p.categoria))
@@ -309,7 +295,6 @@ document.addEventListener("DOMContentLoaded", () => {
       mixed.map(renderProductCard).join("");
   }
 
-  // Plantilla de cada tarjeta
   function renderProductCard(p) {
     const hasDesc = p.descuento > 0;
     const precioAct = hasDesc
@@ -340,25 +325,70 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  // Render dinámico según filtros
   function renderSection(sectionId, category) {
     const cont = document.getElementById(sectionId);
     if (!cont) return;
     let lista = productos.filter(p => p.categoria === category);
 
-    // Aquí aplicar filtros específicos...
+    if (category === "Lociones") {
+      if (filtroGeneroLoc) lista = lista.filter(p => p.genero === filtroGeneroLoc);
+      if (filtroDescuentoLoc) lista = lista.filter(p => p.descuento > 0);
+      if (filtroMarcasLoc.size) lista = lista.filter(p =>
+        p.marcas?.some(m => filtroMarcasLoc.has(m))
+      );
+      if (filtroOrdenPrecioLoc === "asc") lista.sort((a,b)=>a.precio-b.precio);
+      if (filtroOrdenPrecioLoc === "desc") lista.sort((a,b)=>b.precio-a.precio);
+    }
+
+    if (category === "Gorras") {
+      if (filtroDescuentoG) lista = lista.filter(p => p.descuento > 0);
+      if (filtroOrdenPrecioG === "asc") lista.sort((a,b)=>a.precio-b.precio);
+      if (filtroOrdenPrecioG === "desc") lista.sort((a,b)=>b.precio-a.precio);
+    }
+
+    if (category === "Maquillaje") {
+      if (filtroMarcasMQ.size)    lista = lista.filter(p => p.marcas?.some(m=>filtroMarcasMQ.has(m)));
+      if (filtroProductosMQ.size) lista = lista.filter(p => p.productos?.some(x=>filtroProductosMQ.has(x)));
+      if (filtroDescuentoMQ)      lista = lista.filter(p => p.descuento > 0);
+      if (filtroPackMQ)           lista = lista.filter(p => p.isPack);
+      if (filtroOrdenPrecioMQ === "asc")  lista.sort((a,b)=>a.precio-b.precio);
+      if (filtroOrdenPrecioMQ === "desc") lista.sort((a,b)=>b.precio-a.precio);
+    }
+
+    if (category === "Pijama") {
+      if (filtroDescuentoPJ) lista = lista.filter(p => p.descuento > 0);
+      if (filtroOrdenPrecioPJ === "asc") lista.sort((a,b)=>a.precio-b.precio);
+      if (filtroOrdenPrecioPJ === "desc") lista.sort((a,b)=>b.precio-a.precio);
+      if (filtroGeneroPJ)  lista = lista.filter(p => p.genero === filtroGeneroPJ);
+      if (filtroTallasPJ.size) lista = lista.filter(p =>
+        p.talla?.split(",").some(t => filtroTallasPJ.has(t.trim()))
+      );
+    }
+
+    if (category === "Ropa Deportiva") {
+      if (filtroGeneroDep) lista = lista.filter(p => p.genero === filtroGeneroDep);
+      if (filtroDescuentoDep) lista = lista.filter(p => p.descuento > 0);
+      if (filtroMarcasDep.size) lista = lista.filter(p => p.marcas?.some(m=>filtroMarcasDep.has(m)));
+      if (filtroTallasDep.size) lista = lista.filter(p =>
+        p.talla?.split(",").some(t => filtroTallasDep.has(t.trim()))
+      );
+      if (filtroOrdenPrecioDep === "asc") lista.sort((a,b)=>a.precio-b.precio);
+      if (filtroOrdenPrecioDep === "desc") lista.sort((a,b)=>b.precio-a.precio);
+    }
 
     cont.innerHTML = lista.map(renderProductCard).join("");
+    if (localStorage.getItem("isAdmin")==="true" && window.enableEditDelete) {
+      window.enableEditDelete();
+    }
   }
 
-  // Utilitario
   function uniqueSorted(arr) {
     return Array.from(new Set(arr.map(s => s.trim()).filter(Boolean)))
                 .sort((a,b)=>a.toLowerCase().localeCompare(b.toLowerCase()));
   }
-
-  // Detalle de producto: pasa el id por URL a visualizacion.html
-  window.verDetalleProducto = id => {
-    window.location.href = `visualizacion.html?id=${id}`;
-  };
 });
+
+// Navegar a detalle en visualizacion
+function verDetalleProducto(id) {
+  window.location.href = `visualizacion.html?id=${id}`;
+}
