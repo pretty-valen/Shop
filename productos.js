@@ -40,20 +40,7 @@ if (esDeportivaPage) {
   const contMar= document.getElementById("filtro-marcas-deportiva");
   const contTal= document.getElementById("filtro-tallas-deportiva");
   contMar.innerHTML = "";
-  contTal.innerHTML = "";
-  uniqueSorted(productos.filter(p=>p.categoria==="Ropa Deportiva").flatMap(p=>(p.marcas || [])))
-    .forEach(marca => {
-      const id = "mdep-"+marca.replace(/\s+/g,"");
-      const chk = document.createElement("input");
-      chk.type="checkbox"; chk.id=id; chk.value=marca;
-      chk.onchange = () => {
-        chk.checked ? filtroMarcasDep.add(marca) : filtroMarcasDep.delete(marca);
-        renderSection("productos-deportiva","Ropa Deportiva");
-      };
-      const lbl = document.createElement("label");
-      lbl.htmlFor=id; lbl.textContent=marca;
-      contMar.append(chk,lbl,document.createElement("br"));
-    });
+ 
 
   uniqueSorted(productos.filter(p=>p.categoria==="Ropa Deportiva").flatMap(p=>(p.talla || "").split(",")))
     .forEach(talla => {
@@ -306,8 +293,7 @@ if (cont) cont.innerHTML = mixed.map(p => renderProductCard(p)).join("");
       const lbl = document.createElement("label");
       lbl.htmlFor = id; lbl.textContent = talla;
       contTal.append(chk, lbl, document.createElement("br"));
-       const contTal = document.getElementById("filtro-tallas-pijama");
-let filtroTallasPj = new Set();
+    
 
 contTal.innerHTML = "";
 uniqueSorted(productos.filter(p=>p.categoria==="Pijama").flatMap(p=>(p.talla || "").split(",")))
