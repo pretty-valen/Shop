@@ -340,6 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
       : p.precio.toFixed(2);
     return `
       <div class="producto-card"
+           onclick="verDetalleProducto('${p._id || p.id}')"
            data-id="${p._id||p.id}"
            data-genero="${p.genero||''}"
            data-tallas="${(p.talla||'').toUpperCase()}"
@@ -439,3 +440,11 @@ document.addEventListener("DOMContentLoaded", () => {
     location.href = "visualizacion.html";
   };
 });
+  // Al final de productos.js
+  window.verDetalleProducto = id => {
+    const origen = location.pathname.split("/").pop().replace(".html","") || "index";
+    localStorage.setItem("productoSeleccionado",
+      JSON.stringify({ id, origen })
+    );
+    location.href = "visualizacion.html";
+  };
