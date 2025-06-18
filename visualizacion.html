@@ -1,78 +1,181 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Visualización del producto</title>
-  <link rel="stylesheet" href="estilos.css">
+  <link rel="stylesheet" href="estilos.css"/>
+  <style>
+    body {
+      background-color: #ffe6f0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #001f3f;
+      margin: 0;
+      padding: 0;
+    }
+    .contenedor-producto {
+      max-width: 1000px;
+      margin: 50px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-wrap: wrap;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .imagen {
+      flex: 1 1 50%;
+      background: linear-gradient(to bottom right, #f9f9f9, #eaeaea);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .imagen img {
+      max-width: 100%;
+      border-radius: 10px;
+      transition: transform 0.3s ease;
+    }
+    .imagen img:hover {
+      transform: scale(1.03);
+    }
+    .info {
+      flex: 1 1 50%;
+      padding: 40px 30px;
+      background: #ffffff;
+    }
+    .info h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .info p {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .info p strong {
+      color: #001f3f;
+    }
+    #selector-talla {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline-color: #001f3f;
+      margin: 8px 0 20px;
+    }
+    .botones-fijos {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px 10px 60px;
+    }
+    .botones-fijos button {
+      background: #001f3f;
+      color: white;
+      padding: 14px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .botones-fijos button:hover {
+      background: #003366;
+      transform: translateY(-2px);
+    }
+  </style>
 </head>
 <body>
   <div class="contenedor-producto">
     <div class="imagen" id="imagen-prod"></div>
     <div class="info" id="detalle-producto"></div>
   </div>
+
   <div class="botones-fijos">
     <button onclick="location.href='index.html'">Inicio</button>
     <button id="btn-catalogo">Regresar al catálogo</button>
     <button id="btn-agregar">Agregar al carrito</button>
     <button onclick="location.href='carrito.html'">Carrito</button>
   </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(location.search);
+      const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
-      if (!id) {
-        document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+      const categoria = params.get("categoria");
+      const contDetalle = document.getElementById("detalle-producto");
+      if (!id || !categoria) {
+        contDetalle.innerText = "Producto no encontrado.";
         return;
       }
-      fetch("https://admin-backend-ts85.onrender.com/productos")
-        .then(res => res.json())
+      fetch(`https://admin-backend-ts85.onrender.com/productos?categoria=${categoria}`)
+        .then(res => res.ok ? res.json() : Promise.reject())
         .then(list => {
-          const prod = list.find(p => String(p.id) === id || String(p._id) === id);
+          const prod = list.find(p => String(p.id) === id);
           if (!prod) {
-            document.getElementById("detalle-producto").innerText = "Producto no encontrado.";
+            contDetalle.innerText = "Producto no encontrado.";
             return;
           }
           document.getElementById("imagen-prod").innerHTML =
             `<img src="${prod.fotos[0]}" alt="${prod.nombre}">`;
           const hasDesc = prod.descuento > 0;
           const precioFinal = hasDesc
-            ? (prod.precio * (1 - prod.descuento / 100)).toFixed(2)
+            ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
             : prod.precio.toFixed(2);
-          const tallas = prod.talla ? prod.talla.split(",").map(t=>t.trim()) : [];
-          let html = `<h2>${prod.nombre}</h2>
-            <p><strong>Precio:</strong> $${precioFinal}</p>`;
-          if (hasDesc) html = `<p><strong>Antes:</strong> $${prod.precio.toFixed(2)}</p>` + html;
-          if (prod.marca)      html += `<p><strong>Marca:</strong> ${prod.marca}</p>`;
-          if (prod.producto)   html += `<p><strong>Tipo:</strong> ${prod.producto}</p>`;
-          if (prod.categoria)  html += `<p><strong>Categoría:</strong> ${prod.categoria}</p>`;
-          if (prod.descripcion) html += `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`;
-          if (tallas.length) {
-            html += `<p><strong>Tallas:</strong>
-              <select id="selector-talla">
-                <option value="">Seleccione</option>
-                ${tallas.map(t=>`<option>${t}</option>`).join("")}
-              </select>
-            </p>`;
+          const tallas = prod.talla
+            ? prod.talla.split(",").map(t => t.trim())
+            : [];
+          let html = `<h2>${prod.nombre}</h2>`;
+          if (hasDesc) {
+            html += `
+              <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+              <p><strong>Precio ahora:</strong> $${precioFinal}</p>
+              <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
+            `;
+          } else {
+            html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
           }
-          document.getElementById("detalle-producto").innerHTML = html;
+          html += prod.marca    ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
+          html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
+          html += prod.categoria? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
+          html += prod.descripcion
+                  ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
+                  : "";
+          if (tallas.length) {
+            html += `
+              <p><strong>Talla:</strong></p>
+              <select id="selector-talla">
+                <option value="">Seleccione una talla</option>
+                ${tallas.map(t => `<option value="${t}">${t}</option>`).join("")}
+              </select>
+            `;
+          }
+          contDetalle.innerHTML = html;
 
           document.getElementById("btn-agregar").onclick = () => {
-            const sel = document.getElementById("selector-talla");
-            if (sel && !sel.value) { alert("Selecciona una talla"); return; }
-            const carrito = JSON.parse(localStorage.getItem("carrito")||"[]");
-            const item = { ...prod, tallaSeleccionada: sel?.value };
+            const select = document.getElementById("selector-talla");
+            if (select && !select.value) {
+              alert("Selecciona una talla");
+              return;
+            }
+            const carritoKey = "carrito";
+            const carrito = JSON.parse(localStorage.getItem(carritoKey) || "[]");
+            const item = { ...prod };
+            if (select) item.tallaSeleccionada = select.value;
             carrito.push(item);
-            localStorage.setItem("carrito", JSON.stringify(carrito));
-            alert("Agregado al carrito");
+            localStorage.setItem(carritoKey, JSON.stringify(carrito));
+            alert("Producto agregado al carrito");
           };
+
           document.getElementById("btn-catalogo").onclick = () => {
-            const cat = prod.categoria ? prod.categoria.toLowerCase().replace(/\s+/g,"") : "index";
-            location.href = `${cat}.html`;
+            location.href = `${categoria.toLowerCase().replace(/\s+/g,'')}.html`;
           };
         })
         .catch(() => {
-          document.getElementById("detalle-producto").innerText = "Error cargando el producto.";
+          contDetalle.innerText = "Error cargando el producto.";
         });
     });
   </script>
