@@ -482,8 +482,12 @@ if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
 
 
 
-}) // ← aquí se cierra el .then
-.catch(err => console.error("Error cargando productos:", err));
+}).catch(err => {
+  console.error("Error cargando productos:", err);
+  productos = [];
+});
+
+
 
 
 
