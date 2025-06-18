@@ -438,7 +438,9 @@ if (esPijamaPage && category==="Pijama") {
 if (localStorage.getItem("isAdmin") === "true" && window.enableEditDelete) {
   window.enableEditDelete();
 }
-}).catch(err => {
+  })
+  .catch(err => {
+
   console.error("Error cargando productos:", err);
   productos = [];
 });
