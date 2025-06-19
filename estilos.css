@@ -535,10 +535,7 @@ header {
   html { font-size: 16px; }
   body { padding: 10px; }
   header, nav { padding: 0 10px; }
-  .productos {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 8px;
-  }
+  
   .imagen-central img { width: 100%; height: auto; }
   h1 { font-size: 1.4rem; }
   h2, p, label, button { font-size: 1rem; }
