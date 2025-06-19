@@ -703,3 +703,6 @@ html, body {
 #filtros-deportiva + .productos {
   grid-template-columns: repeat(5, 1fr);
 }
+.layout-lociones > .productos {
+  grid-template-columns: repeat(5, 1fr) !important;
+}
