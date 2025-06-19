@@ -178,10 +178,18 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Producto agregado al carrito");
       };
 
-      // Volver al catálogo
-      document.getElementById("btn-catalogo").onclick = () => {
-        location.href = `${categoria.toLowerCase().replace(/\s+/g,'')}.html`;
-      };
+     // Volver al catálogo (corrige el caso "Ropa Deportiva")
+document.getElementById("btn-catalogo").onclick = () => {
+  const cat = categoria.toLowerCase().trim();
+  let pagina;
+  if (cat === "ropa deportiva") {
+    pagina = "deportiva.html";
+  } else {
+    pagina = `${cat.replace(/\s+/g, '')}.html`;
+  }
+  location.href = pagina;
+};
+
     })
     .catch(() => {
       cont.innerText = "Error cargando el producto.";
