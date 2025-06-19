@@ -160,14 +160,7 @@ header {
 .flecha.izquierda { left: 8px; }
 .flecha.derecha   { right: 8px; }
 
-/* Productos: grid */
-.productos {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  margin: 20px;
-  align-items: start;
-}
+
 
 
 .producto-card,
@@ -535,7 +528,7 @@ header {
   html { font-size: 16px; }
   body { padding: 10px; }
   header, nav { padding: 0 10px; }
-  
+ 
   .imagen-central img { width: 100%; height: auto; }
   h1 { font-size: 1.4rem; }
   h2, p, label, button { font-size: 1rem; }
@@ -544,10 +537,7 @@ header {
 @media (min-width: 481px) and (max-width: 767px) {
   html { font-size: 17px; }
   body { padding: 15px; }
-  .productos {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-  }
+  
   .imagen-central img {
     width: 80%;
     max-width: 400px;
@@ -559,10 +549,7 @@ header {
 @media (min-width: 768px) {
   html { font-size: 18px; }
   body { padding: 20px; }
-  .productos {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-  }
+  
   .imagen-central img {
     width: 25%;
     max-width: 300px;
@@ -635,12 +622,7 @@ html, body {
     max-width: 48% !important;
     margin-bottom: 0.5rem !important;
   }
-  .productos {
-    display: grid !important;
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-    padding: 0.5rem !important;
-  }
+ 
   .producto-card {
     width: 100% !important;
   }
@@ -687,4 +669,14 @@ html, body {
     gap: 1rem;
     padding: 1rem 0.5rem;
   }
+}
+/* FORZAR 5 tarjetas por fila SOLO en los catálogos */
+#productos-lociones,
+#productos-gorras,
+#productos-maquillaje,
+#productos-pijama,
+#productos-deportiva {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 20px !important;
 }
