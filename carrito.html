@@ -43,22 +43,38 @@
       border-radius: 8px;
     }
     .item-info h3 {
-      margin: 0 0 8px 0;
+      margin: 0 0 8px;
       font-size: 20px;
     }
     .item-info p {
       margin: 4px 0;
       font-size: 16px;
     }
-    .botones-vacios {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-top: 30px;
+    .item-info .cantidad-control {
+      margin-top: 8px;
     }
-    .botones-vacios button {
-      background-color: #001f3f;
+    .item-info .cantidad-control input {
+      width: 60px;
+      padding: 4px;
+      font-size: 16px;
+    }
+    .item-info .subtotal-item {
+      margin-top: 8px;
+      font-weight: bold;
+    }
+    .resumen {
+      margin-top: 30px;
+      text-align: right;
+      font-size: 18px;
+    }
+    .resumen p {
+      margin: 8px 0;
+    }
+    .boton-pagar {
+      margin-top: 20px;
+    }
+    .boton-pagar button {
+      background-color: #25D366;
       color: white;
       padding: 14px 26px;
       border: none;
@@ -68,8 +84,8 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       transition: all 0.2s ease;
     }
-    .botones-vacios button:hover {
-      background-color: #003366;
+    .boton-pagar button:hover {
+      background-color: #1ebe5d;
       transform: translateY(-2px);
     }
   </style>
@@ -86,47 +102,128 @@
     </div>
   </div>
 
-  <!-- JS dinámico carrito -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const key = "carrito";
-      const items = JSON.parse(localStorage.getItem(key) || "[]");
+      const stored = JSON.parse(localStorage.getItem(key) || "[]");
       const cont = document.getElementById("contenido");
+      if (stored.length === 0) return;
 
-      if (items.length === 0) {
-        // Si no hay productos, se deja el HTML por defecto
-        return;
+      // Array local con cantidades
+      const cart = stored.map((prod, idx) => ({
+        ...prod,
+        cantidad: 1,
+        index: idx
+      }));
+
+      // Función para renderizar todo
+      function renderCart() {
+        let html = `
+          <div class="contenedor">
+            <div class="titulo">Tu carrito (${cart.length})</div>
+            <div class="productos-carrito">
+              ${cart.map(item => {
+                const precioUnit = item.precio;
+                const precioDesc = item.descuento > 0
+                  ? precioUnit * (1 - item.descuento/100)
+                  : precioUnit;
+                const subtotal = (precioDesc * item.cantidad).toFixed(2);
+                return `
+                  <div class="carrito-item" data-idx="${item.index}">
+                    <img src="${item.fotos[0]}" alt="${item.nombre}">
+                    <div class="item-info">
+                      <h3>${item.nombre}</h3>
+                      <p><strong>Precio unitario:</strong>
+                        $${precioUnit.toFixed(2)}
+                        ${item.descuento>0
+                          ? `(–${item.descuento}% → $${precioDesc.toFixed(2)})`
+                          : ``
+                        }
+                      </p>
+                      ${item.tallaSeleccionada
+                        ? `<p><strong>Talla:</strong> ${item.tallaSeleccionada}</p>`
+                        : ``
+                      }
+                      ${item.marcas?.length
+                        ? `<p><strong>Marca:</strong> ${item.marcas.join(", ")}</p>`
+                        : ``
+                      }
+                      <div class="cantidad-control">
+                        <label>Cantidad:
+                          <input type="number" min="1" value="${item.cantidad}"
+                                 data-idx="${item.index}" class="cantidad-input">
+                        </label>
+                      </div>
+                      <p class="subtotal-item">Subtotal: $${subtotal}</p>
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+
+            <div class="resumen">
+              <p>Total sin descuento: $${ totalSinDescuento().toFixed(2) }</p>
+              <p>Total con descuento: $${ totalConDescuento().toFixed(2) }</p>
+            </div>
+
+            <div class="boton-pagar">
+              <button id="btn-pagar">Pagar por WhatsApp</button>
+            </div>
+          </div>
+        `;
+        cont.innerHTML = html;
+
+        // Añadir event listeners a inputs de cantidad
+        document.querySelectorAll(".cantidad-input").forEach(input => {
+          input.addEventListener("change", e => {
+            const idx = +e.target.dataset.idx;
+            const val = Math.max(1, +e.target.value);
+            cart.find(it => it.index === idx).cantidad = val;
+            renderCart();
+          });
+        });
+
+        // Botón pagar
+        document.getElementById("btn-pagar")
+          .addEventListener("click", () => {
+            const lines = cart.map(item => {
+              const precioDesc = item.descuento>0
+                ? (item.precio*(1-item.descuento/100)).toFixed(2)
+                : item.precio.toFixed(2);
+              let line = `- ${item.nombre} ×${item.cantidad} @ $${precioDesc}`;
+              if (item.tallaSeleccionada) line += ` (Talla: ${item.tallaSeleccionada})`;
+              if (item.marcas?.length)      line += ` (Marca: ${item.marcas.join(", ")})`;
+              return line;
+            }).join("%0A"); // %0A = salto de línea en URL
+
+            const mensaje = 
+              `Hola!%0AQuisiera hacer el pedido:%0A${lines}` +
+              `%0A%0ATotal sin descuento: $${totalSinDescuento().toFixed(2)}` +
+              `%0ATotal con descuento: $${totalConDescuento().toFixed(2)}` +
+              `%0A%0AMuchas gracias!`;
+
+            // Reemplaza TU_NUMERO_WHATSAPP por tu número real
+            const waLink = `https://wa.me/TU_NUMERO_WHATSAPP?text=${mensaje}`;
+            window.open(waLink, "_blank");
+          });
       }
 
-      // Si hay productos, construimos el HTML del carrito
-      let html = `
-        <div class="contenedor">
-          <div class="titulo">Tu carrito (${items.length})</div>
-          <div class="productos-carrito">
-            ${items.map(prod => `
-              <div class="carrito-item">
-                <img src="${prod.fotos[0]}" alt="${prod.nombre}">
-                <div class="item-info">
-                  <h3>${prod.nombre}</h3>
-                  <p><strong>Precio:</strong> $${prod.descuento > 0
-                    ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
-                    : prod.precio.toFixed(2)
-                  }</p>
-                  ${prod.tallaSeleccionada
-                    ? `<p><strong>Talla:</strong> ${prod.tallaSeleccionada}</p>`
-                    : ""
-                  }
-                </div>
-              </div>
-            `).join("")}
-          </div>
-          <div class="botones-vacios">
-            <button onclick="location.href='index.html'">Seguir comprando</button>
-          </div>
-        </div>
-      `;
+      // Calcula totales
+      function totalSinDescuento() {
+        return cart.reduce((sum, item) =>
+          sum + item.precio * item.cantidad, 0
+        );
+      }
+      function totalConDescuento() {
+        return cart.reduce((sum, item) => {
+          const pu = item.descuento > 0
+            ? item.precio*(1-item.descuento/100)
+            : item.precio;
+          return sum + pu*item.cantidad;
+        }, 0);
+      }
 
-      cont.innerHTML = html;
+      renderCart();
     });
   </script>
 </body>
