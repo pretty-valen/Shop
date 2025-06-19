@@ -393,3 +393,9 @@ document.addEventListener("DOMContentLoaded", () => {
 window.verDetalleProducto = (id, categoria) => {
    window.location.href = `visualizacion.html?id=${id}&categoria=${categoria}`;
 }
+document.querySelector('.arrow.left').onclick = () =>
+  document.querySelector('.productos-carousel')
+          .scrollBy({ left: -200, behavior: 'smooth' });
+document.querySelector('.arrow.right').onclick = () =>
+  document.querySelector('.productos-carousel')
+          .scrollBy({ left:  200, behavior: 'smooth' });
