@@ -626,17 +626,22 @@ html, body {
   .nombre-tienda {
     margin: 0 auto !important;
   }
+  @media (max-width: 600px) {
   .contenedor-secciones {
     display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 0.5rem !important;
-    padding: 0 0.5rem !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-behavior: smooth !important;
+    padding: 0 1rem !important;
+    gap: 1rem !important;
   }
   .contenedor-secciones .seccion {
-    flex: 0 0 48% !important;
-    max-width: 48% !important;
-    margin-bottom: 0.5rem !important;
+    flex: 0 0 25% !important;
+    max-width: 25% !important;
+    margin-bottom: 0 !important;
   }
+}
+
   .productos {
     display: grid !important;
     grid-template-columns: 1fr !important;
