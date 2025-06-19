@@ -692,8 +692,7 @@ html, body {
     gap: 1rem;
     padding: 1rem 0.5rem;
   }
-}
-.contenedor-secciones {
+  .contenedor-secciones {
   flex-wrap: nowrap !important;
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch;
@@ -703,5 +702,7 @@ html, body {
   flex: 0 0 auto !important;
   min-width: 150px !important; /* ajusta ancho al gusto */
   margin-bottom: 0 !important;
+}
+
 }
 
