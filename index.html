@@ -228,6 +228,47 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 </script>
 
+<button id="admin-access-btn" class="admin-invisible-btn"></button>
+<div id="admin-login-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="document.getElementById('admin-login-modal').classList.remove('open')">&times;</span>
+    <h2>Acceso administrador</h2>
+    <form onsubmit="return validarLogin(event)">
+      <label for="admin-usuario">Usuario:</label>
+      <input type="text" id="admin-usuario" required>
+      <label for="admin-clave">Contraseña:</label>
+      <input type="password" id="admin-clave" required>
+      <button type="submit">Ingresar</button>
+    </form>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const adminBtn = document.getElementById("admin-access-btn");
+    const modal = document.getElementById("admin-login-modal");
+
+    if (adminBtn && modal) {
+      adminBtn.addEventListener("click", () => {
+        modal.classList.add("open");
+      });
+    }
+  });
+
+  function validarLogin(event) {
+    event.preventDefault();
+    const usuario = document.getElementById("admin-usuario").value;
+    const clave = document.getElementById("admin-clave").value;
+
+    if (usuario === "admin" && clave === "1234") {
+      alert("Acceso concedido");
+      // Aquí puedes redirigir o activar funcionalidades admin
+      document.getElementById("admin-login-modal").classList.remove("open");
+    } else {
+      alert("Usuario o clave incorrecta");
+    }
+    return false;
+  }
+</script>
 
 </body>
 </html>
