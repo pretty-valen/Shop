@@ -597,3 +597,23 @@ header {
 .contenedor-secciones .seccion {
   text-decoration: none !important;
 }
+/* Productos en fila horizontal y envuelven */
+.layout-lociones .productos,
+.layout-gorras .productos,
+.layout-maquillaje .productos,
+.layout-pijama .productos,
+.layout-deportiva .productos {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+}
+
+/* Tarjetas: dos por fila */
+.layout-lociones .productos .producto-card,
+.layout-gorras .productos .producto-card,
+.layout-maquillaje .productos .producto-card,
+.layout-pijama .productos .producto-card,
+.layout-deportiva .productos .producto-card {
+  flex: 0 0 calc(50% - 1rem) !important;
+  max-width: calc(50% - 1rem) !important;
+}
