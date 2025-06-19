@@ -160,15 +160,6 @@ header {
 .flecha.izquierda { left: 8px; }
 .flecha.derecha   { right: 8px; }
 
-/* Productos: grid */
-.productos {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  margin: 20px;
-  align-items: start;
-}
-
 
 .producto-card,
 .product-card {
@@ -691,7 +682,12 @@ html, body {
     padding: 1rem 0.5rem;
   }
 }
-[id^="filtros-"] + #contenedor-productos {
+
+#filtros-lociones   + #contenedor-productos,
+#filtros-gorras     + #contenedor-productos,
+#filtros-maquillaje + #contenedor-productos,
+#filtros-pijama     + #contenedor-productos,
+#filtros-deportiva  + #contenedor-productos {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
