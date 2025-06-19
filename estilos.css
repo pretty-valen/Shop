@@ -691,7 +691,7 @@ html, body {
     padding: 1rem 0.5rem;
   }
 }
-#contenedor-productos {
+[id^="filtros"] ~ #contenedor-productos {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
