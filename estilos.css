@@ -162,15 +162,12 @@ header {
 
 /* Productos: grid */
 .productos {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;       /* si quieres scroll horizontal */
-  /* flex-wrap: wrap; */   /* si prefieres que baje de fila al no caber */
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
   margin: 20px;
-  overflow-x: auto;        /* habilita scroll si usas nowrap */
+  align-items: start;
 }
-
 
 .producto-card,
 .product-card {
