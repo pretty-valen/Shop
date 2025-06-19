@@ -161,7 +161,6 @@ header {
 .flecha.derecha   { right: 8px; }
 
 /* Productos: grid */
-/* Productos: grid */
 .productos {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -691,4 +690,9 @@ html, body {
     gap: 1rem;
     padding: 1rem 0.5rem;
   }
+}
+#contenedor-productos {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
 }
