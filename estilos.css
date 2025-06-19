@@ -614,3 +614,33 @@ html, body {
   justify-content: space-around;
   gap: 4rem;
 }
+@media (max-width: 600px) {
+  /* Header: logo centered, hamburguesa y carrito a los lados */
+  header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1rem;
+  }
+  .nombre-tienda {
+    position: static;
+    margin: 0 auto;
+  }
+
+  /* Carrusel: tarjetas más estrechas y con espacio */
+  .contenedor-secciones {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+  .contenedor-secciones .seccion {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  /* Productos: una columna */
+  .productos {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 0.5rem 1rem;
+  }
+}
