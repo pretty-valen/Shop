@@ -617,17 +617,19 @@ html, body {
   body {
     padding: 0 !important;
   }
+
   header {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
     padding: 0.5rem 1rem !important;
   }
+
   .nombre-tienda {
     margin: 0 auto !important;
   }
 
-  /* SECCIONES en fila horizontal deslizable */
+  /* SECCIONES deslizable horizontal */
   .contenedor-secciones {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -637,9 +639,11 @@ html, body {
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
+
   .contenedor-secciones::-webkit-scrollbar {
     display: none;
   }
+
   .contenedor-secciones .seccion {
     flex: 0 0 auto !important;
     width: 45% !important;
@@ -647,7 +651,19 @@ html, body {
     margin-bottom: 0.5rem !important;
   }
 
-  /* PRODUCTOS en 2 columnas */
+  /* FILTROS: que se vean como en maquillaje y pijama */
+  #filtros-lociones,
+  #filtros-gorras,
+  #filtros-deportiva {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* PRODUCTOS en 2 columnas como index */
   #productos-lociones,
   #productos-gorras,
   #productos-maquillaje,
@@ -677,6 +693,7 @@ html, body {
     padding: 1rem 0.5rem !important;
   }
 }
+
 
 
 @media (max-width: 600px) {
