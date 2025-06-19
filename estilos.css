@@ -746,17 +746,7 @@ html, body {
   gap: 20px !important;
 }
 
-/* Móvil pequeño: 1 columna */
-@media (max-width: 480px) {
-  #productos-lociones,
-  #productos-gorras,
-  #productos-maquillaje,
-  #productos-pijama,
-  #productos-deportiva {
-    grid-template-columns: 1fr !important;
-    gap: 8px !important;
-  }
-}
+
 
 /* Tablet: 2 columnas */
 @media (min-width: 481px) and (max-width: 767px) {
