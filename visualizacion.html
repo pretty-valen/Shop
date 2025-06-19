@@ -105,30 +105,45 @@
     document.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams(window.location.search);
       const id = params.get("id");
-      const categoria = params.get("categoria");
       const contDetalle = document.getElementById("detalle-producto");
-      if (!id || !categoria) {
+
+      // Si no hay id en la URL, abortamos
+      if (!id) {
         contDetalle.innerText = "Producto no encontrado.";
         return;
       }
-      fetch(`https://admin-backend-ts85.onrender.com/productos?categoria=${categoria}`)
-        .then(res => res.ok ? res.json() : Promise.reject())
-        .then(list => {
-          const prod = list.find(p => String(p.id) === id);
-          if (!prod) {
+
+      // PETICIÓN al endpoint /productos/:id
+      fetch(`https://admin-backend-ts85.onrender.com/productos/${id}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Producto no encontrado.");
+          return res.json();
+        })
+        .then(prod => {
+          // Si el servidor devuelve un objeto sin _id, avisamos
+          if (!prod || !prod._id) {
             contDetalle.innerText = "Producto no encontrado.";
             return;
           }
+
+          // Renderizamos la imagen
           document.getElementById("imagen-prod").innerHTML =
-            `<img src="${prod.fotos[0]}" alt="${prod.nombre}">`;
+            `<img src="${prod.fotos[0] || ''}" alt="${prod.nombre}">`;
+
+          // Precio y descuento
           const hasDesc = prod.descuento > 0;
           const precioFinal = hasDesc
             ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
             : prod.precio.toFixed(2);
+
+          // Tallas (si existen)
           const tallas = prod.talla
-            ? prod.talla.split(",").map(t => t.trim())
+            ? prod.talla.split(",").map(t => t.trim()).filter(Boolean)
             : [];
+
+          // Construcción del HTML de datos
           let html = `<h2>${prod.nombre}</h2>`;
+
           if (hasDesc) {
             html += `
               <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
@@ -138,12 +153,24 @@
           } else {
             html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
           }
-          html += prod.marca    ? `<p><strong>Marca:</strong> ${prod.marca}</p>` : "";
-          html += prod.producto ? `<p><strong>Tipo:</strong> ${prod.producto}</p>` : "";
-          html += prod.categoria? `<p><strong>Categoría:</strong> ${prod.categoria}</p>` : "";
-          html += prod.descripcion
-                  ? `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`
-                  : "";
+
+          // Marca(s)
+          if (Array.isArray(prod.marcas) && prod.marcas.length) {
+            html += `<p><strong>Marca:</strong> ${prod.marcas.join(", ")}</p>`;
+          }
+
+          // Tipo(s)
+          if (Array.isArray(prod.productos) && prod.productos.length) {
+            html += `<p><strong>Tipo:</strong> ${prod.productos.join(", ")}</p>`;
+          }
+
+          // Categoría y descripción
+          html += `<p><strong>Categoría:</strong> ${prod.categoria}</p>`;
+          if (prod.descripcion) {
+            html += `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`;
+          }
+
+          // Selector de tallas
           if (tallas.length) {
             html += `
               <p><strong>Talla:</strong></p>
@@ -153,8 +180,10 @@
               </select>
             `;
           }
+
           contDetalle.innerHTML = html;
 
+          // Botón "Agregar al carrito"
           document.getElementById("btn-agregar").onclick = () => {
             const select = document.getElementById("selector-talla");
             if (select && !select.value) {
@@ -170,12 +199,17 @@
             alert("Producto agregado al carrito");
           };
 
+          // Botón "Regresar al catálogo"
           document.getElementById("btn-catalogo").onclick = () => {
-            location.href = `${categoria.toLowerCase().replace(/\s+/g,'')}.html`;
+            const slug = prod.categoria
+              .toLowerCase()
+              .replace(/\s+/g, '');
+            location.href = `${slug}.html`;
           };
+
         })
-        .catch(() => {
-          contDetalle.innerText = "Error cargando el producto.";
+        .catch(err => {
+          contDetalle.innerText = err.message;
         });
     });
   </script>
