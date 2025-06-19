@@ -712,4 +712,18 @@ html, body {
 }
 
 }
+@media (max-width: 600px) {
+  .productos {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .producto-card,
+  .product-card {
+    width: auto !important;
+    max-width: 100% !important;
+    padding: 8px !important;
+  }
+}
 
