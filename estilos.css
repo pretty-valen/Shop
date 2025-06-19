@@ -617,3 +617,34 @@ header {
   flex: 0 0 calc(50% - 1rem) !important;
   max-width: calc(50% - 1rem) !important;
 }
+/* ——— Categorías: filtro + productos en fila ——— */
+.layout-lociones,
+.seccion-productos {
+  display: flex;
+  gap: 1rem;
+}
+
+/* filtro: ancho fijo */
+.layout-lociones aside,
+.seccion-productos aside,
+.seccion-productos .filtros-maquillaje,
+.seccion-productos .filtros-pijama {
+  flex: 0 0 240px;
+  max-width: 240px;
+}
+
+/* productos: fila horizontal y envuelven al llegar al final */
+.layout-lociones .productos,
+.seccion-productos .productos {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* tarjetas: dos por fila */
+.layout-lociones .productos .producto-card,
+.seccion-productos .productos .producto-card {
+  flex: 0 0 calc(50% - 1rem);
+  max-width: calc(50% - 1rem);
+}
