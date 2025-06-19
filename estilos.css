@@ -1,5 +1,3 @@
-/* estilos.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 
 :root {
@@ -102,7 +100,7 @@ header {
   height: auto;
 }
 
-/* ——— Carousel de secciones ——— */
+/* Carousel de secciones */
 .secciones {
   position: relative;
   margin: 16px 0;
@@ -113,9 +111,8 @@ header {
   flex-wrap: nowrap;
   overflow-x: auto;
   scroll-behavior: smooth;
-  padding: 0 40px;   /* espacio para flechas */
+  padding: 0 40px;
   gap: 16px;
-  /* Oculta scrollbar en todos los navegadores */
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -123,11 +120,9 @@ header {
   display: none;
 }
 
-/* Cada tarjeta ocupa 25% del ancho → 5 tarjetas = 125% */
 .contenedor-secciones .seccion {
   flex: 0 0 25%;
   max-width: 25%;
-  /* ————— Vuelve a añadir tu diseño original ————— */
   background-color: var(--navy);
   border: 1px solid var(--pink);
   border-radius: 8px;
@@ -136,24 +131,20 @@ header {
   flex-direction: column;
 }
 
-/* Imagen dentro de la sección */
 .contenedor-secciones .seccion img {
   width: 100%;
   height: 160px;
   object-fit: cover;
 }
 
-/* El “cuadro” del título (hereda el navy) */
 .contenedor-secciones .seccion .titulo {
   padding: 12px 0;
   font-size: 1.25rem;
   text-align: center;
   color: var(--pink);
-  /* opcional repetir fondo si lo prefieres explícito */
   background-color: var(--navy);
 }
 
-/* Flechas de navegación */
 .flecha {
   position: absolute;
   top: 50%;
@@ -169,47 +160,17 @@ header {
 .flecha.izquierda { left: 8px; }
 .flecha.derecha   { right: 8px; }
 
-
-
-.seccion img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-}
-
-.seccion .titulo {
-  padding: 12px 0;
-  font-size: 1.25rem;
-  text-align: center;
-  color: var(--pink);
-}
-
-.flecha {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: var(--navy);
-}
-
-.flecha.izquierda {
-  margin-right: 8px;
-}
-
-.flecha.derecha {
-  margin-left: 8px;
-}
-
-/* Productos: grid de 5 tarjetas por fila */
+/* Productos: grid */
 .productos {
   display: grid;
-  grid-template-columns: repeat(5, 200px);
-  gap: 16px;
-  justify-content: center;
-  padding: 0 16px 32px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin: 20px;
+  align-items: start;
 }
 
-.producto-card {
+.producto-card,
+.product-card {
   width: 200px;
   max-width: 200px;
   background-color: var(--navy);
@@ -220,13 +181,16 @@ header {
   flex-direction: column;
   align-items: center;
   color: var(--white);
+  cursor: pointer;
 }
 
-.producto-card img {
+.producto-card img,
+.product-card img {
   width: 100%;
   height: auto;
   border-radius: 4px;
   margin-bottom: 8px;
+  object-fit: cover;
 }
 
 .producto-info {
@@ -244,29 +208,29 @@ header {
   color: var(--white);
 }
 
+/* Footer */
+.site-footer,
 .footer {
+  width: 100%;
   background-color: var(--navy);
-  padding: 32px 16px;
+  padding: 2rem 0;
+  margin: 0;
 }
 
-.footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  gap: 24px;
+.footer-links,
+.footer-grid {
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.footer-section {
-  flex: 1;
-  min-width: 200px;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 2rem;
 }
 
 .footer-section h3 {
   font-size: 1.25rem;
   margin-bottom: 8px;
-  color: var(--pink);
+  color: var(--white);
 }
 
 .footer-section p,
@@ -275,23 +239,37 @@ header {
   color: var(--pink);
 }
 
-.icono-redes {
-  width: 32px;
-  height: 32px;
-  display: block;
-  margin-top: 8px;
+.footer-redes h3 {
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+  color: var(--white);
 }
 
-/* ------ Estilos del Modal Admin corregido ------ */
+.footer-redes .redes-icons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
 
+.footer-redes .redes-icons img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  transition: transform 0.2s;
+}
+
+.footer-redes .redes-icons a:hover img {
+  transform: scale(1.1);
+}
+
+/* Modal Admin */
 .modal {
   display: none;
   position: fixed;
-  top: 0; 
-  left: 0;
-  width: 100%; 
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
   justify-content: center;
   align-items: center;
   z-index: 300;
@@ -307,17 +285,16 @@ header {
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
-  max-height: 90vh;          /* ← limita la altura */
-  overflow-y: auto;          /* ← añade scroll si es necesario */
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
 .modal-content .close,
 .modal-content .close-catalogo {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 12px; right: 12px;
   font-size: 1.25rem;
   cursor: pointer;
   color: var(--navy);
@@ -365,64 +342,16 @@ header {
   background: #001f3d;
 }
 
-.admin-active [data-editable] {
-  outline: 2px dashed red;
-}
-
-a.seccion {
-  text-decoration: none;
-}
-/* Layout de Lociones: filtros + productos */
+/* Layout Lociones */
 .layout-lociones {
   display: flex;
-  gap: 24px;
+  gap: 2rem;
   padding: 16px;
 }
-
-/* Panel de filtros */
-#filtros-lociones {
-  width: 200px;
-  background: var(--white);
-  border: 1px solid var(--navy);
-  border-radius: 8px;
-  padding: 16px;
-  color: var(--navy);
-}
-
-#filtros-lociones h3 {
-  margin-bottom: 12px;
-  text-align: center;
-}
-
-.filtro-grupo {
-  margin-bottom: 12px;
-}
-
-.filtro-grupo label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-#filtro-marcas {
-  max-height: 120px;
-  overflow-y: auto;
-  padding-left: 8px;
-}
-
-/* Ajusta el grid dentro de layout: ocupa el espacio restante */
-.layout-lociones .productos {
-  flex: 1;
-}
-.precio-original {
-  color: #999;
-  margin-bottom: 4px;
-}
-/* ===== Estilos para el panel de filtros en Lociones ===== */
 
 #filtros-lociones {
   background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--navy);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 24px;
@@ -464,26 +393,6 @@ a.seccion {
   padding-left: 8px;
 }
 
-#filtro-marcas label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-  font-size: 0.9rem;
-  color: var(--navy);
-}
-
-#filtro-marcas input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-#filtros-lociones input[type="checkbox"] {
-  transform: scale(1.1);
-  margin-right: 6px;
-}
-
 #btn-reset-filtros {
   display: block;
   width: 100%;
@@ -501,299 +410,91 @@ a.seccion {
   background: #001f3d;
 }
 
-/* Aseguramos separación clara del panel respecto al grid */
-.layout-lociones #filtros-lociones {
-  margin-right: 24px;
-}
-/* Subtítulo sobre destacados */
-.subtitulo {
-  font-size: 1.5rem;
-  text-align: center;
-  margin: 24px 0 12px;
-  color: var(--navy);
-}
-
-/* Origen / categoría en cada card */
-.origen {
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 4px;
-  text-align: center;
-}
-.secciones {
-  position: relative;
-  margin: 16px 0;
-}
-
-.contenedor-secciones {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  padding: 0 40px; /* deja espacio para las flechas */
-  gap: 16px;
-}
-
-.flecha {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  color: var(--navy);
-  display: none;      /* solo aparece si hay overflow */
-  z-index: 10;
-}
-
-.flecha.izquierda { left: 8px;  }
-.flecha.derecha   { right: 8px; }
-/* —— Ocultar scrollbar en el carrusel de secciones —— */
-.contenedor-secciones {
-  /* ya tienes overflow-x: auto */
-  -ms-overflow-style: none;    /* IE y Edge */
-  scrollbar-width: none;       /* Firefox */
-}
-
-.contenedor-secciones::-webkit-scrollbar {
-  display: none;               /* Chrome, Safari y Opera */
-}
-.filtros-gorras {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--white);
-  border-bottom: 2px solid var(--navy);
-}
-.filtros-gorras label,
-.filtros-gorras select {
-  font-size: 1rem;
-}
-#sort-precio-gorras {
-  padding: 0.4rem;
-  border: 1px solid var(--navy);
-  border-radius: 4px;
-}
-#filter-descuento-gorras {
-  margin-right: 0.3rem;
-}
-/* Replica el estilo del sidebar de lociones */
+/* Filtros Gorras */
 #filtros-gorras {
-  width: 240px;
-  background: var(--white);
+  flex: 0 0 240px;
+  background: #ffffff;
   padding: 1rem;
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
+
 #filtros-gorras .filtro-grupo {
   margin-bottom: 1rem;
 }
 
-/* Asegura que el layout sea flex como en lociones */
-.layout-lociones {
-  display: flex;
-  gap: 2rem;
-}
-/* ─── Diseño panel Maquillaje ─── */
+/* Filtros Maquillaje */
 .filtros-maquillaje {
+  flex: 0 0 200px;
   background: #ffffff;
-  max-width: 260px;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin: 20px;
-}
-
-.filtros-maquillaje h2 {
-  margin: 0 0 16px;
-  font-size: 1.3rem;
-  text-align: center;
-  color: #001f3f;
-}
-
-.filtros-maquillaje label {
-  display: block;
-  margin-top: 12px;
-  font-weight: 600;
-  color: #001f3f;
-}
-
-.filtros-maquillaje select {
-  width: 100%;
-  padding: 8px;
-  margin-top: 4px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 0.95rem;
-}
-
-.filtros-maquillaje input[type="checkbox"] {
-  transform: scale(1.2);
-  margin-right: 8px;
-  vertical-align: middle;
-  margin-top: 12px;
-}
-
-.filtros-maquillaje button#clear-filters {
-  width: 100%;
-  margin-top: 20px;
-  padding: 10px;
-  background-color: #001f3f;
-  color: #ffc0cb;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.filtros-maquillaje button#clear-filters:hover {
-  background-color: #003366;
-}
-/* Reducir ancho del filtro de Maquillaje */
-.content-maquillaje .filtros-maquillaje {
-  flex: 0 0 200px;      /* ancho fijo más estrecho */
-  max-width: 200px;
-  padding: 16px;        /* menos padding para que ocupe menos alto */
-  top: 20px;
-}
-
-/* Ajuste interno para etiquetas y checkboxes */
-.filtros-maquillaje label {
-  margin-top: 8px;      /* menos espacio vertical entre controles */
-  font-size: 0.95rem;   /* letra un poquito más pequeña */
-}
-
-.filtros-maquillaje input[type="checkbox"] {
-  transform: scale(1.1);
-}
-
-/* Asegura que, si el filtro crece demasiado vertical, se pueda hacer scroll */
-.filtros-maquillaje {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 16px;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
 }
-/* ─── Grid uniforme para todas las secciones de productos ─── */
-.productos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-  margin: 20px;
-  align-items: start;
+
+.filtros-maquillaje h2 {
+  font-size: 1.3rem;
+  text-align: center;
+  color: var(--navy);
 }
 
-/* Ajuste extra para que no se meta debajo del sidebar */
-.content-maquillaje .productos {
-  /* si ya tienes esto, asegúrate de que no anule las reglas anteriores */
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
+.filtros-maquillaje label {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: var(--navy);
 }
-.seccion-productos {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-.filtros-maquillaje {
-  flex: 0 0 280px;
-}
-.productos-maquillaje {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
-  gap: 20px;
-}
-.product-card {
-  background: #0b1d3a;
-  border-radius: 8px;
-  color: #fff;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-}
-.product-card img {
+
+.filtros-maquillaje select,
+.filtros-maquillaje input[type="checkbox"] {
   width: 100%;
-  border-radius: 4px;
-  object-fit: cover;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
-.product-card .marca,
-.product-card .tipo,
-.product-card .categoria {
-  font-size: 0.85rem;
-  opacity: 0.8;
+
+#clear-filters {
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: var(--navy);
+  color: var(--pink);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
-.product-card .precio-ant {
-  text-decoration: line-through;
-  font-size: 0.9rem;
-}
-.product-card .precio-act {
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-.product-card .descuento {
-  font-size: 0.9rem;
-  color: #e74c3c;
-}
-.product-card h3 {
-  margin: 0;
-  font-size: 1rem;
-  text-transform: capitalize;
-}
-/* contenedor flex para todas las secciones */
-.seccion-productos {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-/* ancho fijo de filtros */
+
+/* Filtros Pijama */
 .filtros-pijama {
   flex: 0 0 280px;
-}
-/* grid de productos compartido */
-.productos {
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
-  gap: 20px;
-}
-/* Estilos filtros Pijamas */
-.filtros-pijama {
   background: #ffffff;
   border-radius: 12px;
   padding: 24px;
-  width: 300px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 .filtros-pijama h2 {
   font-size: 1.5rem;
-  color: #001f3f;
-  margin-bottom: 8px;
+  color: var(--navy);
 }
-.filtros-pijama label {
-  font-size: 1rem;
-  color: #001f3f;
-}
+
 .filtros-pijama select,
-.filtros-pijama input[type="checkbox"] + span {
+.filtros-pijama input[type="checkbox"] {
   font-size: 1rem;
-}
-.filtros-pijama select {
   padding: 6px 8px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  width: 100%;
 }
+
 #clear-filters-pijama {
-  background: #001f3f;
-  color: #ffc0cb;
+  background: var(--navy);
+  color: var(--pink);
   border: none;
   padding: 10px;
   border-radius: 6px;
@@ -801,35 +502,7 @@ a.seccion {
   font-size: 1rem;
 }
 
-/* Estilos tarjetas de Pijama (reutiliza producto-card) */
-.producto-card {
-  background: #0b1d3a;
-  border-radius: 8px;
-  color: #fff;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-.producto-card img {
-  width: 100%;
-  border-radius: 4px;
-  object-fit: cover;
-}
-.producto-card .precio-ant {
-  text-decoration: line-through;
-  opacity: 0.8;
-}
-.producto-card .precio-act {
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-.producto-card .descuento {
-  color: #e74c3c;
-}
-/* Filtros ropa deportiva mejorados */
+/* Filtros Deportiva */
 #filtros-deportiva {
   background-color: #fff;
   padding: 16px;
@@ -837,7 +510,6 @@ a.seccion {
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   max-width: 300px;
-  font-family: Arial, sans-serif;
 }
 
 #filtros-deportiva h3 {
@@ -845,30 +517,6 @@ a.seccion {
   margin-bottom: 12px;
   color: #001f3f;
   text-align: center;
-}
-
-#filtros-deportiva .filtro-grupo {
-  margin-bottom: 14px;
-}
-
-#filtros-deportiva label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: bold;
-  color: #001f3f;
-}
-
-#filtros-deportiva select,
-#filtros-deportiva input[type="text"],
-#filtros-deportiva input[type="number"] {
-  width: 100%;
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#filtros-deportiva input[type="checkbox"] {
-  margin-right: 6px;
 }
 
 #btn-reset-filtros-deportiva {
@@ -879,39 +527,26 @@ a.seccion {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
 }
 
-#btn-reset-filtros-deportiva:hover {
-  background-color: #003366;
-}
-.producto-card {
-  cursor: pointer;
-}
-/* MOVIL: hasta 480px */
+/* Responsive */
 @media (max-width: 480px) {
   html { font-size: 16px; }
   body { padding: 10px; }
   header, nav { padding: 0 10px; }
-  .productos-grid {
+  .productos {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 8px;
   }
-  .imagen-central img {
-    width: 100%;
-    height: auto;
-  }
+  .imagen-central img { width: 100%; height: auto; }
   h1 { font-size: 1.4rem; }
-  h2 { font-size: 1.2rem; }
-  p, label, button { font-size: 1rem; }
-  .detalle-contenedor { flex-direction: column; gap: 16px; padding: 10px; }
+  h2, p, label, button { font-size: 1rem; }
 }
 
-/* TABLET: 481px–767px */
 @media (min-width: 481px) and (max-width: 767px) {
   html { font-size: 17px; }
   body { padding: 15px; }
-  .productos-grid {
+  .productos {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 12px;
   }
@@ -921,14 +556,12 @@ a.seccion {
   }
   h1 { font-size: 1.6rem; }
   h2 { font-size: 1.3rem; }
-  p, label, button { font-size: 1.05rem; }
 }
 
-/* DESKTOP: desde 768px */
 @media (min-width: 768px) {
   html { font-size: 18px; }
   body { padding: 20px; }
-  .productos-grid {
+  .productos {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
   }
@@ -939,6 +572,45 @@ a.seccion {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
 }
+/* Centrar "Productos Destacados" */
+.subtitulo, h2 {
+  text-align: center;
+}
 
+/* Quitar subrayado de los títulos de sección */
+.contenedor-secciones .seccion .titulo a {
+  text-decoration: none;
+}
+.contenedor-secciones .seccion .titulo a {
+  text-decoration: none !important;
+}
+/* Eliminar subrayado bajo todos los estados del enlace */
+.contenedor-secciones .seccion .titulo a,
+.contenedor-secciones .seccion .titulo a:link,
+.contenedor-secciones .seccion .titulo a:visited,
+.contenedor-secciones .seccion .titulo a:hover,
+.contenedor-secciones .seccion .titulo a:active {
+  text-decoration: none !important;
+}
 
+/* Quitar subrayado de los enlaces que envuelven cada tarjeta */
+.contenedor-secciones .seccion {
+  text-decoration: none !important;
+}
+/* Quitar márgenes o “bordes” laterales y en la parte inferior */
+html, body {
+  margin: 0;
+  padding: 0;
+}
+.footer {
+  width: 100vw;
+  margin: 0;
+  padding: 32px 0;
+}
 
+/* Separar más las columnas del footer */
+.footer-links {
+  display: flex;
+  justify-content: space-around;
+  gap: 4rem;
+}
