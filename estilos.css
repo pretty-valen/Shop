@@ -885,16 +885,19 @@ html, body {
 /* Botón invisible solo en móvil */
 @media (max-width: 600px) {
   .admin-invisible-btn {
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: absolute;
+    bottom: 2rem;
+    right: 1rem;
     width: 40px;
     height: 40px;
-    background: transparent;
+    background: red; /* visible */
+    opacity: 0.7;
     border: none;
+    border-radius: 50%;
     z-index: 999;
   }
 }
+
 @media (max-width: 600px) {
   .admin-invisible-btn {
     position: absolute;
