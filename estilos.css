@@ -799,3 +799,28 @@ html, body {
     width: 100% !important;
   }
 }
+/* SOLO diseño para escritorio */
+@media (min-width: 768px) {
+  .layout-lociones {
+    display: flex !important;
+    gap: 2rem !important;
+    padding: 16px !important;
+  }
+
+  #productos-lociones,
+  #productos-gorras,
+  #productos-maquillaje,
+  #productos-pijama,
+  #productos-deportiva {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 20px !important;
+  }
+
+  #filtros-lociones,
+  #filtros-gorras,
+  #filtros-deportiva {
+    max-width: 220px !important;
+    flex: 0 0 220px !important;
+  }
+}
