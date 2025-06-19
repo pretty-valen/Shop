@@ -894,5 +894,18 @@ html, body {
   border-radius: 50%;
   border: none;
 }
+@media (max-width: 600px) {
+  .admin-invisible-btn {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 16px !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: red; /* Puedes quitarlo cuando confirmes posición */
+    z-index: 9999 !important;
+    border-radius: 50% !important;
+    border: none !important;
+  }
+}
 
 
