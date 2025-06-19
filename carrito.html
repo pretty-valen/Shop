@@ -5,255 +5,312 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Carrito</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #ffc9d9;
-      font-family: 'Segoe UI', sans-serif;
-      color: #001f3f;
+    :root {
+      --color-fondo: #ffe6ef;
+      --color-primario: #001f3f;
+      --color-secundario: #ff6699;
+      --color-boton: #25d366;
+      --color-boton-hover: #1ebe5d;
+      --shadow-card: 0 4px 12px rgba(0,0,0,0.1);
+      --border-radius: 12px;
+      --espacio: 1.2rem;
+      --fuente: 'Segoe UI', sans-serif;
     }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: var(--fuente);
+      background: var(--color-fondo);
+      color: var(--color-primario);
+      line-height: 1.5;
+    }
+    header {
+      background: var(--color-primario);
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    header h1 { font-size: 1.8rem; letter-spacing: 1px; }
+
     .contenedor {
       max-width: 1000px;
-      margin: 60px auto;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .carrito-vacio {
       background: white;
-      border-radius: 12px;
-      padding: 40px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border-radius: var(--border-radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-card);
       text-align: center;
     }
-    .titulo {
-      font-size: 28px;
-      margin-bottom: 20px;
+    .carrito-vacio h2 {
+      margin-bottom: 1rem;
+      font-size: 1.6rem;
     }
+    .carrito-vacio button {
+      margin: 0 .5rem;
+      padding: .8rem 1.4rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--color-primario);
+      color: white;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .carrito-vacio button:hover {
+      background: darken(var(--color-primario),10%);
+    }
+
     .productos-carrito {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      text-align: left;
+      display: grid;
+      gap: 1.5rem;
     }
     .carrito-item {
-      display: flex;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: 120px auto;
+      gap: 1rem;
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      box-shadow: var(--shadow-card);
       align-items: center;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 20px;
     }
     .carrito-item img {
-      width: 120px;
-      border-radius: 8px;
+      width: 100%;
+      border-radius: var(--border-radius);
+      object-fit: cover;
     }
     .item-info h3 {
-      margin: 0 0 8px;
-      font-size: 20px;
+      margin-bottom: .5rem;
+      font-size: 1.2rem;
     }
     .item-info p {
-      margin: 4px 0;
-      font-size: 16px;
+      margin-bottom: .4rem;
+      font-size: .95rem;
     }
     .item-info .cantidad-control {
-      margin-top: 8px;
+      display: inline-block;
+      margin: .5rem 0;
     }
-    .item-info .cantidad-control input {
-      width: 60px;
-      padding: 4px;
-      font-size: 16px;
+    .cantidad-control input {
+      width: 3rem;
+      text-align: center;
+      padding: .2rem;
+      margin-left: .4rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
-    .item-info .subtotal-item {
-      margin-top: 8px;
-      font-weight: bold;
+    .btn-eliminar {
+      display: inline-block;
+      margin-top: .6rem;
+      padding: .4rem .8rem;
+      border: none;
+      border-radius: 4px;
+      background: #ff4d4f;
+      color: white;
+      cursor: pointer;
+      font-size: .85rem;
+      transition: background .2s;
     }
+    .btn-eliminar:hover {
+      background: #d9363e;
+    }
+
     .resumen {
-      margin-top: 30px;
+      margin-top: 2rem;
       text-align: right;
-      font-size: 18px;
+      font-size: 1rem;
+      background: white;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-card);
     }
     .resumen p {
-      margin: 8px 0;
+      margin: .5rem 0;
     }
+    .resumen p.total {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
     .botones-final {
       display: flex;
       justify-content: center;
-      gap: 20px;
-      margin-top: 30px;
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
     .botones-final button {
-      background-color: #001f3f;
-      color: white;
-      padding: 12px 24px;
+      flex: 1;
+      max-width: 200px;
+      padding: .8rem 1.2rem;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      transition: all 0.2s ease;
+      font-size: 1rem;
+      transition: transform .2s, background .2s;
     }
-    .botones-final button#btn-pagar {
-      background-color: #25D366;
+    .botones-final #btn-atras {
+      background: var(--color-primario);
+      color: white;
+    }
+    .botones-final #btn-seguir {
+      background: var(--color-secundario);
+      color: white;
+    }
+    .botones-final #btn-pagar {
+      background: var(--color-boton);
+      color: white;
     }
     .botones-final button:hover {
       transform: translateY(-2px);
     }
-    .botones-final button#btn-atras:hover {
-      background-color: #555;
+    .botones-final #btn-pagar:hover {
+      background: var(--color-boton-hover);
     }
-    .botones-final button#btn-seguir:hover {
-      background-color: #003366;
-    }
-    .texto-vacio, .botones-vacios button {
-      margin-top: 20px;
-    }
-    .botones-vacios button {
-      margin: 0 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      background: #001f3f;
-      color: white;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .botones-vacios button:hover {
-      background: #003366;
+
+    @media (max-width: 600px) {
+      .carrito-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .item-info { text-align: center; }
     }
   </style>
 </head>
 <body>
-  <div id="contenido">
-    <div class="contenedor">
-      <div class="titulo">Tu carrito está vacío</div>
-      <div class="texto-vacio">No has agregado ningún producto todavía.</div>
-      <div class="botones-vacios">
-        <button onclick="history.back()">Atrás</button>
-        <button onclick="location.href='index.html'">Inicio</button>
-      </div>
-    </div>
+
+  <header>
+    <h1>Mi Carrito de Compras</h1>
+  </header>
+
+  <div class="contenedor" id="contenido">
+    <!-- Aquí se inyecta el carrito o el mensaje vacío -->
   </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const key = "carrito";
-      const stored = JSON.parse(localStorage.getItem(key) || "[]");
+      const STORAGE_KEY = "carrito";
+      const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
       const cont = document.getElementById("contenido");
-      if (stored.length === 0) return;
+      if (stored.length === 0) {
+        cont.innerHTML = `
+          <div class="carrito-vacio">
+            <h2>Tu carrito está vacío</h2>
+            <p>No has agregado ningún producto todavía.</p>
+            <button onclick="history.back()">Atrás</button>
+            <button onclick="location.href='index.html'">Inicio</button>
+          </div>`;
+        return;
+      }
 
-      // Array local con cantidades y su índice original
-      const cart = stored.map((prod, idx) => ({
+      let cart = stored.map((prod, idx) => ({
         ...prod,
         cantidad: 1,
         index: idx
       }));
 
-      // Renderiza todo el carrito
-      function renderCart() {
-        let html = `
-          <div class="contenedor">
-            <div class="titulo">Tu carrito (${cart.length})</div>
-            <div class="productos-carrito">
-              ${cart.map(item => {
-                const precioUnit = item.precio;
-                const precioDesc = item.descuento > 0
-                  ? precioUnit * (1 - item.descuento/100)
-                  : precioUnit;
-                const subtotal = (precioDesc * item.cantidad).toFixed(2);
-                return `
-                  <div class="carrito-item" data-idx="${item.index}">
-                    <img src="${item.fotos[0]}" alt="${item.nombre}">
-                    <div class="item-info">
-                      <h3>${item.nombre}</h3>
-                      <p><strong>Precio unitario:</strong>
-                        $${precioUnit.toFixed(2)}
-                        ${item.descuento > 0
-                          ? `(–${item.descuento}% → $${precioDesc.toFixed(2)})`
-                          : ``}
-                      </p>
-                      ${item.tallaSeleccionada
-                        ? `<p><strong>Talla:</strong> ${item.tallaSeleccionada}</p>`
-                        : ``}
-                      ${item.marcas?.length
-                        ? `<p><strong>Marca:</strong> ${item.marcas.join(", ")}</p>`
-                        : ``}
-                      <div class="cantidad-control">
-                        <label>Cantidad:
-                          <input type="number" min="1" value="${item.cantidad}"
-                                 data-idx="${item.index}" class="cantidad-input">
-                        </label>
-                      </div>
-                      <p class="subtotal-item">Subtotal: $${subtotal}</p>
-                    </div>
-                  </div>
-                `;
-              }).join("")}
-            </div>
-
-            <div class="resumen">
-              <p>Total sin descuento: $${ totalSinDescuento().toFixed(2) }</p>
-              <p>Total con descuento: $${ totalConDescuento().toFixed(2) }</p>
-            </div>
-
-            <div class="botones-final">
-              <button id="btn-atras">Atrás</button>
-              <button id="btn-pagar">Pagar</button>
-              <button id="btn-seguir">Seguir comprando</button>
-            </div>
-          </div>
-        `;
-        cont.innerHTML = html;
-
-        // Cambios en cantidad
-        document.querySelectorAll(".cantidad-input").forEach(input => {
-          input.addEventListener("change", e => {
-            const idx = +e.target.dataset.idx;
-            const val = Math.max(1, +e.target.value);
-            cart.find(it => it.index === idx).cantidad = val;
-            renderCart();
-          });
-        });
-
-        // Botón ATRÁS
-        document.getElementById("btn-atras")
-          .addEventListener("click", () => history.back());
-
-        // Botón PAGAR
-        document.getElementById("btn-pagar")
-          .addEventListener("click", () => {
-            const lines = cart.map(item => {
-              const pd = item.descuento > 0
-                ? (item.precio*(1-item.descuento/100)).toFixed(2)
-                : item.precio.toFixed(2);
-              let line = `- ${item.nombre} ×${item.cantidad} @ $${pd}`;
-              if (item.tallaSeleccionada) line += ` (Talla: ${item.tallaSeleccionada})`;
-              if (item.marcas?.length)      line += ` (Marca: ${item.marcas.join(", ")})`;
-              return line;
-            }).join("%0A");
-
-            const mensaje =
-              `Hola!%0AQuisiera hacer el pedido:%0A${lines}` +
-              `%0A%0ATotal sin descuento: $${totalSinDescuento().toFixed(2)}` +
-              `%0ATotal con descuento: $${totalConDescuento().toFixed(2)}` +
-              `%0A%0AMuchas gracias!`;
-
-            const waLink = `https://wa.me/3053339623?text=${mensaje}`;
-            window.open(waLink, "_blank");
-          });
-
-        // Botón SEGUIR COMPRANDO
-        document.getElementById("btn-seguir")
-          .addEventListener("click", () => location.href = 'index.html');
-      }
-
-      // Cálculo de totales
-      function totalSinDescuento() {
-        return cart.reduce((sum, item) =>
-          sum + item.precio * item.cantidad, 0
+      function guardar() {
+        localStorage.setItem(STORAGE_KEY,
+          JSON.stringify(cart.map(({cantidad,index, ...p}) => p))
         );
       }
+
+      function totalSinDescuento() {
+        return cart.reduce((s, i) => s + i.precio * i.cantidad, 0);
+      }
       function totalConDescuento() {
-        return cart.reduce((sum, item) => {
-          const pu = item.descuento > 0
-            ? item.precio*(1-item.descuento/100)
-            : item.precio;
-          return sum + pu*item.cantidad;
+        return cart.reduce((s, i) => {
+          const pu = i.descuento>0
+            ? i.precio*(1-i.descuento/100)
+            : i.precio;
+          return s + pu * i.cantidad;
         }, 0);
+      }
+
+      function renderCart() {
+        cont.innerHTML = `
+          <div class="productos-carrito">
+            ${cart.map(item => {
+              const pu = item.precio;
+              const pd = item.descuento>0
+                ? pu * (1-item.descuento/100)
+                : pu;
+              const subtotal = (pd * item.cantidad).toFixed(2);
+              return `
+              <div class="carrito-item" data-idx="${item.index}">
+                <img src="${item.fotos[0]}" alt="${item.nombre}">
+                <div class="item-info">
+                  <h3>${item.nombre}</h3>
+                  <p><strong>Unitario:</strong> $${pu.toFixed(2)}
+                    ${item.descuento>0? `(–${item.descuento}% → $${pd.toFixed(2)})` : ""}
+                  </p>
+                  ${item.tallaSeleccionada? `<p><strong>Talla:</strong> ${item.tallaSeleccionada}</p>` : ""}
+                  ${item.marcas?.length? `<p><strong>Marca:</strong> ${item.marcas.join(", ")}</p>` : ""}
+                  <div class="cantidad-control">
+                    <label>Cantidad:
+                      <input type="number" min="1" value="${item.cantidad}"
+                             data-idx="${item.index}" class="cantidad-input">
+                    </label>
+                  </div>
+                  <p class="subtotal-item">Subtotal: $${subtotal}</p>
+                  <button class="btn-eliminar" data-idx="${item.index}">
+                    Eliminar
+                  </button>
+                </div>
+              </div>`;  
+            }).join("")}
+          </div>
+          <div class="resumen">
+            <p>Total sin descuento: $${ totalSinDescuento().toFixed(2) }</p>
+            <p class="total">Total con descuento: $${ totalConDescuento().toFixed(2) }</p>
+          </div>
+          <div class="botones-final">
+            <button id="btn-atras">Atrás</button>
+            <button id="btn-pagar">Pagar por WhatsApp</button>
+            <button id="btn-seguir">Seguir comprando</button>
+          </div>`;
+
+        // eventos
+        document.querySelectorAll(".cantidad-input").forEach(inp => {
+          inp.onchange = e => {
+            const idx = +e.target.dataset.idx;
+            cart.find(i=>i.index===idx).cantidad = Math.max(1, +e.target.value);
+            guardar(); renderCart();
+          };
+        });
+        document.querySelectorAll(".btn-eliminar").forEach(btn => {
+          btn.onclick = e => {
+            const idx = +e.target.dataset.idx;
+            cart = cart.filter(i=>i.index!==idx);
+            guardar(); renderCart();
+          };
+        });
+        document.getElementById("btn-atras").onclick = () => history.back();
+        document.getElementById("btn-seguir").onclick = () => location.href = "index.html";
+        document.getElementById("btn-pagar").onclick = () => {
+          const lines = cart.map(i => {
+            const pdU = i.descuento>0
+              ? (i.precio*(1-i.descuento/100)).toFixed(2)
+              : i.precio.toFixed(2);
+            let l = `- ${i.nombre} ×${i.cantidad} @ $${pdU}`;
+            if (i.tallaSeleccionada) l+= ` (T: ${i.tallaSeleccionada})`;
+            if (i.marcas?.length)      l+= ` (M: ${i.marcas.join(", ")})`;
+            return l;
+          }).join("%0A");
+          const msg =
+            `Hola!%0AQuiero pedir:%0A${lines}` +
+            `%0A%0ATotal sin dto: $${ totalSinDescuento().toFixed(2)}` +
+            `%0ATotal dto: $${ totalConDescuento().toFixed(2)}` +
+            `%0A%0AMuchas gracias!`;
+          window.open(
+            `https://wa.me/TU_NUMERO_WHATSAPP?text=${msg}`,
+            "_blank"
+          );
+        };
       }
 
       renderCart();
