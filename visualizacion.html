@@ -103,69 +103,57 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+      // 1) Obtener el parámetro id de la URL
+      const id = new URLSearchParams(window.location.search).get("id");
       const contDetalle = document.getElementById("detalle-producto");
-
-      // Si no hay id en la URL, abortamos
       if (!id) {
         contDetalle.innerText = "Producto no encontrado.";
         return;
       }
 
-      // PETICIÓN al endpoint /productos/:id
+      // 2) Llamar al endpoint GET /productos/:id
       fetch(`https://admin-backend-ts85.onrender.com/productos/${id}`)
         .then(res => {
-          if (!res.ok) throw new Error("Producto no encontrado.");
+          if (!res.ok) throw new Error("No encontrado");
           return res.json();
         })
         .then(prod => {
-          // Si el servidor devuelve un objeto sin _id, avisamos
-          if (!prod || !prod._id) {
-            contDetalle.innerText = "Producto no encontrado.";
-            return;
-          }
-
-          // Renderizamos la imagen
+          // 3) Mostrar los datos
           document.getElementById("imagen-prod").innerHTML =
-            `<img src="${prod.fotos[0] || ''}" alt="${prod.nombre}">`;
+            `<img src="${prod.fotos[0]||''}" alt="${prod.nombre}">`;
 
-          // Precio y descuento
           const hasDesc = prod.descuento > 0;
           const precioFinal = hasDesc
             ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
             : prod.precio.toFixed(2);
 
-          // Tallas (si existen)
+          // tallas en array
           const tallas = prod.talla
-            ? prod.talla.split(",").map(t => t.trim()).filter(Boolean)
+            ? prod.talla.split(",").map(t => t.trim())
             : [];
 
-          // Construcción del HTML de datos
+          // construir el HTML
           let html = `<h2>${prod.nombre}</h2>`;
-
           if (hasDesc) {
             html += `
-              <p><strong>Precio anterior:</strong> $${prod.precio.toFixed(2)}</p>
+              <p><strong>Precio antes:</strong> $${prod.precio.toFixed(2)}</p>
               <p><strong>Precio ahora:</strong> $${precioFinal}</p>
-              <p style="color:red;"><strong>Descuento:</strong> ${prod.descuento}%</p>
+              <p style="color:red"><strong>Descuento:</strong> ${prod.descuento}%</p>
             `;
           } else {
             html += `<p><strong>Precio:</strong> $${prod.precio.toFixed(2)}</p>`;
           }
 
-          // Marca(s)
-          if (Array.isArray(prod.marcas) && prod.marcas.length) {
+          // Marca(s) y tipo(s)
+          if (prod.marcas?.length) {
             html += `<p><strong>Marca:</strong> ${prod.marcas.join(", ")}</p>`;
           }
-
-          // Tipo(s)
-          if (Array.isArray(prod.productos) && prod.productos.length) {
+          if (prod.productos?.length) {
             html += `<p><strong>Tipo:</strong> ${prod.productos.join(", ")}</p>`;
           }
-
-          // Categoría y descripción
-          html += `<p><strong>Categoría:</strong> ${prod.categoria}</p>`;
+          if (prod.categoria) {
+            html += `<p><strong>Categoría:</strong> ${prod.categoria}</p>`;
+          }
           if (prod.descripcion) {
             html += `<p><strong>Descripción:</strong> ${prod.descripcion}</p>`;
           }
@@ -183,33 +171,32 @@
 
           contDetalle.innerHTML = html;
 
-          // Botón "Agregar al carrito"
+          // 4) Botón "Agregar al carrito"
           document.getElementById("btn-agregar").onclick = () => {
-            const select = document.getElementById("selector-talla");
-            if (select && !select.value) {
+            const sel = document.getElementById("selector-talla");
+            if (sel && !sel.value) {
               alert("Selecciona una talla");
               return;
             }
-            const carritoKey = "carrito";
-            const carrito = JSON.parse(localStorage.getItem(carritoKey) || "[]");
-            const item = { ...prod };
-            if (select) item.tallaSeleccionada = select.value;
-            carrito.push(item);
-            localStorage.setItem(carritoKey, JSON.stringify(carrito));
+            const key = "carrito";
+            const basket = JSON.parse(localStorage.getItem(key) || "[]");
+            const item = { ...prod, tallaSeleccionada: sel?.value };
+            basket.push(item);
+            localStorage.setItem(key, JSON.stringify(basket));
             alert("Producto agregado al carrito");
           };
 
-          // Botón "Regresar al catálogo"
+          // 5) Botón "Regresar al catálogo"
           document.getElementById("btn-catalogo").onclick = () => {
-            const slug = prod.categoria
-              .toLowerCase()
-              .replace(/\s+/g, '');
-            location.href = `${slug}.html`;
+            const page = prod.categoria
+              ? prod.categoria.toLowerCase().replace(/\s+/g, "") + ".html"
+              : "index.html";
+            location.href = page;
           };
-
         })
         .catch(err => {
-          contDetalle.innerText = err.message;
+          console.error(err);
+          contDetalle.innerText = "Producto no encontrado.";
         });
     });
   </script>
