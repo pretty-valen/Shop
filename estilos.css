@@ -703,6 +703,13 @@ html, body {
   min-width: 150px !important; /* ajusta ancho al gusto */
   margin-bottom: 0 !important;
 }
+.productos {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.producto-card {
+  width: auto !important;
+}
 
 }
 
