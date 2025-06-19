@@ -19,46 +19,45 @@
       border-radius: 12px;
       padding: 40px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      text-align: center;
     }
     .titulo {
       font-size: 28px;
       margin-bottom: 20px;
-      text-align: center;
     }
-    .lista-productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    .productos-carrito {
+      display: flex;
+      flex-direction: column;
       gap: 20px;
-      margin-bottom: 30px;
+      text-align: left;
     }
-    .producto-item {
-      border: 1px solid #eee;
-      border-radius: 8px;
-      overflow: hidden;
-      text-align: center;
-      padding: 10px;
-    }
-    .producto-item img {
-      max-width: 100%;
-      height: auto;
+    .carrito-item {
+      display: flex;
+      gap: 20px;
+      align-items: center;
       border-bottom: 1px solid #ddd;
-      margin-bottom: 10px;
+      padding-bottom: 20px;
     }
-    .producto-item h4 {
-      margin: 10px 0 5px;
-      font-size: 18px;
+    .carrito-item img {
+      width: 120px;
+      border-radius: 8px;
     }
-    .producto-item p {
+    .item-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+    }
+    .item-info p {
       margin: 4px 0;
-      font-size: 14px;
+      font-size: 16px;
     }
-    .acciones {
+    .botones-vacios {
       display: flex;
       justify-content: center;
       gap: 20px;
       flex-wrap: wrap;
+      margin-top: 30px;
     }
-    .acciones button {
+    .botones-vacios button {
       background-color: #001f3f;
       color: white;
       padding: 14px 26px;
@@ -69,65 +68,65 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       transition: all 0.2s ease;
     }
-    .acciones button:hover {
+    .botones-vacios button:hover {
       background-color: #003366;
       transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
-  <div id="contenido"></div>
+  <div id="contenido">
+    <div class="contenedor">
+      <div class="titulo">Tu carrito está vacío</div>
+      <div class="texto-vacio">No has agregado ningún producto todavía.</div>
+      <div class="botones-vacios">
+        <button onclick="history.back()">Volver atrás</button>
+        <button onclick="location.href='index.html'">Inicio</button>
+      </div>
+    </div>
+  </div>
 
+  <!-- JS dinámico carrito -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const key = "carrito";
-      const carrito = JSON.parse(localStorage.getItem(key) || "[]");
+      const items = JSON.parse(localStorage.getItem(key) || "[]");
       const cont = document.getElementById("contenido");
 
-      if (!carrito.length) {
-        // Carrito vacío (misma UI que antes)
-        cont.innerHTML = `
-          <div class="contenedor">
-            <div class="titulo">Tu carrito está vacío</div>
-            <div>No has agregado ningún producto todavía.</div>
-            <div class="acciones">
-              <button onclick="history.back()">Volver atrás</button>
-              <button onclick="location.href='index.html'">Inicio</button>
-            </div>
-          </div>
-        `;
-      } else {
-        // Mostrar lista de productos
-        let html = `
-          <div class="contenedor">
-            <div class="titulo">Productos en tu carrito</div>
-            <div class="lista-productos">
-        `;
-        carrito.forEach((prod, i) => {
-          const precio = prod.descuento > 0
-            ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
-            : prod.precio.toFixed(2);
-          html += `
-            <div class="producto-item">
-              <img src="${prod.fotos?.[0] || ''}" alt="${prod.nombre}">
-              <h4>${prod.nombre}</h4>
-              <p>$${precio}</p>
-              ${prod.tallaSeleccionada ? `<p>Talla: ${prod.tallaSeleccionada}</p>` : ''}
-            </div>
-          `;
-        });
-        html += `
-            </div>
-            <div class="acciones">
-              <button onclick="location.href='index.html'">Seguir comprando</button>
-              <button onclick="localStorage.removeItem('${key}'); location.reload();">
-                Vaciar carrito
-              </button>
-            </div>
-          </div>
-        `;
-        cont.innerHTML = html;
+      if (items.length === 0) {
+        // Si no hay productos, se deja el HTML por defecto
+        return;
       }
+
+      // Si hay productos, construimos el HTML del carrito
+      let html = `
+        <div class="contenedor">
+          <div class="titulo">Tu carrito (${items.length})</div>
+          <div class="productos-carrito">
+            ${items.map(prod => `
+              <div class="carrito-item">
+                <img src="${prod.fotos[0]}" alt="${prod.nombre}">
+                <div class="item-info">
+                  <h3>${prod.nombre}</h3>
+                  <p><strong>Precio:</strong> $${prod.descuento > 0
+                    ? (prod.precio * (1 - prod.descuento/100)).toFixed(2)
+                    : prod.precio.toFixed(2)
+                  }</p>
+                  ${prod.tallaSeleccionada
+                    ? `<p><strong>Talla:</strong> ${prod.tallaSeleccionada}</p>`
+                    : ""
+                  }
+                </div>
+              </div>
+            `).join("")}
+          </div>
+          <div class="botones-vacios">
+            <button onclick="location.href='index.html'">Seguir comprando</button>
+          </div>
+        </div>
+      `;
+
+      cont.innerHTML = html;
     });
   </script>
 </body>
