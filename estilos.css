@@ -613,44 +613,10 @@ html, body {
   display: flex;
   justify-content: space-around;
   gap: 4rem;
-}
-@media (max-width: 600px) {
-  /* Header: logo centered, hamburguesa y carrito a los lados */
-  header {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 1rem;
-  }
-  .nombre-tienda {
-    position: static;
-    margin: 0 auto;
-  }
-
-  /* Carrusel: tarjetas más estrechas y con espacio */
-  .contenedor-secciones {
-    padding: 0 0.5rem;
-    gap: 0.5rem;
-  }
-  .contenedor-secciones .seccion {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-
-  /* Productos: una columna */
-  .productos {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 0 0.5rem 1rem;
-  }
-}
-@media (max-width: 600px) {
-  /* cuerpo sin padding horizontal */
+}@media (max-width: 600px) {
   body {
     padding: 0 !important;
   }
-
-  /* header: logo centrado, iconos a los lados */
   header {
     display: flex !important;
     justify-content: space-between !important;
@@ -660,20 +626,17 @@ html, body {
   .nombre-tienda {
     margin: 0 auto !important;
   }
-
-  /* carrusel: dos tarjetas por fila */
   .contenedor-secciones {
-    padding: 0 0.5rem !important;
-    gap: 0.5rem !important;
+    display: flex !important;
     flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    padding: 0 0.5rem !important;
   }
   .contenedor-secciones .seccion {
     flex: 0 0 48% !important;
     max-width: 48% !important;
     margin-bottom: 0.5rem !important;
   }
-
-  /* productos: una columna */
   .productos {
     display: grid !important;
     grid-template-columns: 1fr !important;
@@ -683,11 +646,9 @@ html, body {
   .producto-card {
     width: 100% !important;
   }
-
-  /* footer ocupa ancho completo */
-  .site-footer,
-  .footer {
+  .footer, .site-footer {
     width: 100% !important;
     padding: 1rem 0 !important;
   }
 }
+
