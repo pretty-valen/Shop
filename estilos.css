@@ -883,17 +883,7 @@ html, body {
 }
 
 /* Botón invisible solo en móvil */
-.admin-invisible-btn {
-  position: fixed;
-  bottom: 30px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  background: red;
-  z-index: 9999;
-  border-radius: 50%;
-  border: none;
-}
+
 @media (max-width: 600px) {
   .admin-invisible-btn {
     position: fixed !important;
@@ -901,11 +891,13 @@ html, body {
     right: 16px !important;
     width: 40px !important;
     height: 40px !important;
-    background: red; /* Puedes quitarlo cuando confirmes posición */
+    background: transparent !important;
+    opacity: 0 !important;
     z-index: 9999 !important;
     border-radius: 50% !important;
     border: none !important;
   }
 }
+
 
 
