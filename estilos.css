@@ -690,3 +690,9 @@ html, body {
     padding: 1rem 0.5rem;
   }
 }
+#contenedor-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  overflow: visible;
+}
