@@ -296,34 +296,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderProductCard(p) {
-    const hasDesc = p.descuento > 0;
-    const precioAct = hasDesc
-      ? (p.precio * (1 - p.descuento/100)).toFixed(2)
-      : p.precio.toFixed(2);
-    return `
-      <div class="producto-card"
-           onclick="verDetalleProducto('${p.id}')"
-           data-id="${p._id||p.id}"
-           data-genero="${p.genero||''}"
-           data-tallas="${(p.talla||'').toUpperCase()}"
-           data-precio="${p.precio}"
-           data-descuento="${p.descuento||0}"
-           style="cursor:pointer">
-        <img src="${p.fotos[0]||''}" alt="${p.nombre}">
-        <div class="producto-info">
-          <h4>${p.nombre}</h4>
-          ${p.marcas?.length ? `<p class="marca">Marca: ${p.marcas.join(", ")}</p>` : ""}
-          ${p.productos?.length ? `<p class="tipo">Producto: ${p.productos.join(", ")}</p>` : ""}
-          ${hasDesc
-            ? `<p class="precio-ant">Precio anterior: $${p.precio.toFixed(2)}</p>
-               <p class="precio-act">Precio: $${precioAct}</p>
-               <p class="descuento">Descuento: ${p.descuento}%</p>`
-            : `<p class="precio-act">Precio: $${precioAct}</p>`}
-          <p class="categoria">${p.categoria}</p>
-        </div>
+  const hasDesc = p.descuento > 0;
+  const precioAct = hasDesc
+    ? (p.precio * (1 - p.descuento/100)).toFixed(2)
+    : p.precio.toFixed(2);
+
+  return `
+    <div class="producto-card"
+         onclick="verDetalleProducto('${p._id}','${p.categoria}')"
+         data-id="${p._id}"
+         data-genero="${p.genero||''}"
+         data-tallas="${(p.talla||'').toUpperCase()}"
+         data-precio="${p.precio}"
+         data-descuento="${p.descuento||0}"
+         style="cursor:pointer">
+      <img src="${p.fotos[0]||''}" alt="${p.nombre}">
+      <div class="producto-info">
+        <h4>${p.nombre}</h4>
+        ${p.marcas?.length ? `<p class="marca">Marca: ${p.marcas.join(", ")}</p>` : ""}
+        ${p.productos?.length ? `<p class="tipo">Producto: ${p.productos.join(", ")}</p>` : ""}
+        ${hasDesc
+          ? `<p class="precio-ant">Precio anterior: $${p.precio.toFixed(2)}</p>
+             <p class="precio-act">Precio: $${precioAct}</p>
+             <p class="descuento">Descuento: ${p.descuento}%</p>`
+          : `<p class="precio-act">Precio: $${precioAct}</p>`}
+        <p class="categoria">${p.categoria}</p>
       </div>
-    `;
-  }
+    </div>
+  `;
+}
 
   function renderSection(sectionId, category) {
     const cont = document.getElementById(sectionId);
@@ -389,6 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Navegar a detalle en visualizacion
-function verDetalleProducto(id) {
-  window.location.href = `visualizacion.html?id=${id}`;
+window.verDetalleProducto = (id, categoria) => {
+   window.location.href = `visualizacion.html?id=${id}&categoria=${categoria}`;
 }
