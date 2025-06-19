@@ -648,3 +648,24 @@ header {
   flex: 0 0 calc(50% - 1rem);
   max-width: calc(50% - 1rem);
 }
+/* Contenedor de productos fijo y centrado */
+.layout-lociones .productos,
+.layout-gorras .productos,
+.layout-maquillaje .productos,
+.layout-pijama .productos,
+.layout-deportiva .productos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Tarjetas con ancho fijo */
+.layout-lociones .productos .producto-card,
+.layout-gorras .productos .producto-card,
+.layout-maquillaje .productos .producto-card,
+.layout-pijama .productos .producto-card,
+.layout-deportiva .productos .producto-card {
+  flex: 0 0 180px;
+  max-width: 180px;
+}
