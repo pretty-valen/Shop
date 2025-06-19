@@ -161,13 +161,15 @@ header {
 .flecha.derecha   { right: 8px; }
 
 /* Productos: grid */
+/* Productos: grid */
 .productos {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 20px;
   margin: 20px;
   align-items: start;
 }
+
 
 .producto-card,
 .product-card {
@@ -689,20 +691,4 @@ html, body {
     gap: 1rem;
     padding: 1rem 0.5rem;
   }
-}
-#contenedor-productos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  overflow: visible;
-}/* Fila fija de 5 productos en catálogos */
-.layout-lociones .productos,
-#filtros-gorras + .productos,
-.filtros-maquillaje + .productos,
-.filtros-pijama + .productos,
-#filtros-deportiva + .productos {
-  grid-template-columns: repeat(5, 1fr);
-}
-.layout-lociones > .productos {
-  grid-template-columns: repeat(5, 1fr) !important;
 }
