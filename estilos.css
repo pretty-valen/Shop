@@ -614,3 +614,40 @@ html, body {
   justify-content: space-around;
   gap: 4rem;
 }
+/* Contenedor flex para todos los layouts de sección */
+.layout-lociones,
+.layout-gorras,
+.layout-maquillaje,
+.layout-pijama,
+.layout-deportiva {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Paneles de filtros: ancho fijo, no se estiran */
+#filtros-lociones,
+#filtros-gorras,
+.filtros-maquillaje,
+.filtros-pijama,
+#filtros-deportiva {
+  flex: 0 0 240px;
+  max-width: 240px;
+}
+
+/* Productos: fila horizontal, envuelven al llegar al final */
+.layout-lociones .productos,
+.layout-gorras .productos,
+.layout-maquillaje .productos,
+.layout-pijama .productos,
+.layout-deportiva .productos {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Tarjetas: dos por fila con espacio entre ellas */
+.producto-card {
+  flex: 0 0 calc(50% - 1rem);
+  max-width: calc(50% - 1rem);
+}
