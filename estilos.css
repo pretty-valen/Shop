@@ -160,14 +160,7 @@ header {
 .flecha.izquierda { left: 8px; }
 .flecha.derecha   { right: 8px; }
 
-/* Productos: grid */
-.productos {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
-  margin: 20px;
-  align-items: start;
-}
+
 
 
 .producto-card,
