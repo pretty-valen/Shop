@@ -669,3 +669,22 @@ header {
   flex: 0 0 180px;
   max-width: 180px;
 }
+/* Reducir tamaño de tarjetas en todos los catálogos */
+.layout-lociones .producto-card,
+.layout-gorras .producto-card,
+.layout-maquillaje .producto-card,
+.layout-pijama .producto-card,
+.layout-deportiva .producto-card {
+  flex: 0 0 150px;
+  max-width: 150px;
+  padding: 8px;
+}
+
+.layout-lociones .producto-card img,
+.layout-gorras .producto-card img,
+.layout-maquillaje .producto-card img,
+.layout-pijama .producto-card img,
+.layout-deportiva .producto-card img {
+  width: 100%;
+  height: auto;
+}
