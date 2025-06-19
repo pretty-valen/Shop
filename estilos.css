@@ -824,3 +824,34 @@ html, body {
     flex: 0 0 220px !important;
   }
 }
+@media (min-width: 768px) {
+  /* Aplicar layout horizontal en todos los catálogos */
+  .layout-lociones,
+  .layout-gorras,
+  .layout-maquillaje,
+  .layout-pijama,
+  .layout-deportiva {
+    display: flex !important;
+    gap: 2rem !important;
+    padding: 16px !important;
+  }
+
+  #filtros-lociones,
+  #filtros-gorras,
+  #filtros-deportiva,
+  .filtros-maquillaje,
+  .filtros-pijama {
+    max-width: 220px !important;
+    flex: 0 0 220px !important;
+  }
+
+  #productos-lociones,
+  #productos-gorras,
+  #productos-maquillaje,
+  #productos-pijama,
+  #productos-deportiva {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 20px !important;
+  }
+}
