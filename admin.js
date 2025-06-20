@@ -111,7 +111,8 @@ if (grupoDeportiva) {
   catalogoModal.addEventListener("transitionend", toggleCamposExtra);
   toggleCamposExtra();
 
-  form.addEventListener("submit", async e => {
+  form.onsubmit = async e => {
+
   e.preventDefault();
 
   const files = Array.from(document.getElementById("fotos").files);
@@ -186,7 +187,7 @@ if (grupoDeportiva) {
   } else {
     alert("❌ Error al guardar el producto");
   }
-});
+}
 
 
   // —————————————
