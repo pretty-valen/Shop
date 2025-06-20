@@ -270,21 +270,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function iniciarRenderizado() {
-    if (esIndexPage) {
-      renderMixed();
-    } else {
-      const secciones = [
-        { id: "productos-lociones",   cat: "Lociones" },
-        { id: "productos-gorras",     cat: "Gorras" },
-        { id: "productos-maquillaje", cat: "Maquillaje" },
-        { id: "productos-pijama",     cat: "Pijama" },
-        { id: "productos-deportiva",  cat: "Ropa Deportiva" }
-      ];
-      secciones.forEach(({ id, cat }) => {
-        if (document.getElementById(id)) renderSection(id, cat);
-      });
-    }
+  if (esIndexPage) {
+    renderMixed();
+    return;
   }
+  const secciones = [
+    { id: "productos-lociones",   cat: "Lociones" },
+    { id: "productos-gorras",     cat: "Gorras" },
+    { id: "productos-maquillaje", cat: "Maquillaje" },
+    { id: "productos-pijama",     cat: "Pijama" },
+    { id: "productos-deportiva",  cat: "Ropa Deportiva" }
+  ];
+  secciones.forEach(({ id, cat }) => {
+    if (document.getElementById(id)) renderSection(id, cat);
+  });
+}
+
 
   function renderMixed() {
     const mixed = productos
