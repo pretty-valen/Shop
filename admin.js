@@ -241,9 +241,11 @@ if (grupoDeportiva) {
       card.style.position = "relative";
       card.appendChild(ctrl);
       ctrl.querySelector(".btn-edit").onclick = () => openEditModal(id);
-      ctrl.querySelector(".btn-del").onclick  = () => {
-        if (confirm("¿Eliminar este producto?")) deleteProduct(id);
-      };
+      ctrl.querySelector(".btn-del").onclick = event => {
+  event.stopPropagation();
+  if (confirm("¿Eliminar este producto?")) deleteProduct(id);
+};
+
     });
   }
 
